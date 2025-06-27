@@ -15,7 +15,7 @@ public class PreAuthService {
 
     /**
     * @Description: 校验用户权限
-    * @param permission 参数
+    * @param permission 权限
     * @return java.lang.Boolean 返回值
     * @author Darven
     * @Date 2025/6/26
