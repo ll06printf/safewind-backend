@@ -1,4 +1,4 @@
-package com.safewind.application.controller.controller.user;
+package com.safewind.application.controller.controller.admin;
 
 import com.safewind.application.controller.dto.UserLoginDTO;
 import com.safewind.application.controller.vo.UserLoginVO;
@@ -8,7 +8,6 @@ import com.safewind.common.utils.Result;
 import com.safewind.domain.bo.UserBO;
 import com.safewind.domain.service.UserDomainService;
 import com.safewind.infra.security.service.SysLoginService;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +31,7 @@ public class UserController {
     @ApiOperationLog(description = "登录接口")
     @PostMapping("/login")
     public Result<UserLoginVO> login(@RequestBody UserLoginDTO userLoginDTO){
+
         String token = loginService.login(userLoginDTO.getUserName(),
                 userLoginDTO.getPassword(),
                 userLoginDTO.getCode(),
@@ -71,7 +71,7 @@ public class UserController {
      * @param userBO 领域实体类
      * @return 返回实体类
      * */
-    private static UserVO getUserVO(UserBO userBO) {
+    private UserVO getUserVO(UserBO userBO) {
         UserVO userVO = UserVO.builder()
                 .userId(userBO.getUserId())
                 .studentId(userBO.getStudentId())

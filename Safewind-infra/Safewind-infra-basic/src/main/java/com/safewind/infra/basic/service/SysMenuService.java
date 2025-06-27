@@ -1,6 +1,11 @@
 package com.safewind.infra.basic.service;
 
+import com.safewind.common.annotation.EntityFill;
+import com.safewind.common.page.Page;
 import com.safewind.infra.basic.entity.SysMenu;
+
+import java.util.List;
+
 /**
  * 菜单权限表(SysMenu)表服务接口
  *
@@ -25,6 +30,7 @@ public interface SysMenuService {
      * @param sysMenu 实例对象
      * @return 实例对象
      */
+
     SysMenu insert(SysMenu sysMenu);
 
     /**
@@ -43,4 +49,23 @@ public interface SysMenuService {
      */
     boolean deleteById(Long menuId);
 
+    /**
+     * 通过角色查询权限
+     *
+     * @param roleId 角色ID
+     * @return 权限信息
+     * */
+    SysMenu queryByRole(Long roleId);
+
+    /**
+     * 分页查询
+     * */
+    List<SysMenu> queryByMenu(SysMenu sysMenu, Page page);
+
+    /**
+     * 查询总页数
+     * */
+    Long count();
+
+    List<SysMenu> query();
 }

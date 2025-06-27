@@ -3,6 +3,8 @@ package com.safewind.application.controller.vo;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.Set;
+
 /**
  * @Author: Darven
  * @CreateTime: 2025-05-29  19:56
@@ -84,4 +86,11 @@ public class UserVO {
      * 部门名称
      */
     private String deptName;
+
+    // ========== 用户权限 字段 ==========
+    /**
+     * 拥有权限
+     */
+    private Set<String> permission;
+
 }

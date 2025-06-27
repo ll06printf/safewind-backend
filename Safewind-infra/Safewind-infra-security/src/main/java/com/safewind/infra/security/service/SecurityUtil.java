@@ -6,6 +6,8 @@ import com.safewind.infra.security.entity.LoginUser;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.util.Set;
+
 /**
  * @Author: Darven
  * @CreateTime: 2025-05-27  22:37
@@ -42,4 +44,23 @@ public class SecurityUtil {
     {
         return SecurityContextHolder.getContext().getAuthentication();
     }
+
+    /**
+    * @Description
+    * @return java.lang.Boolean
+    * @author Darven
+    * @Date 2025/6/26
+    */
+    public static Set<String> getAuth(){
+        try
+        {
+            LoginUser loginUser = (LoginUser) getAuthentication().getPrincipal();
+            return loginUser.getPermissions();
+        }
+        catch (Exception e)
+        {
+            throw new BizException(ResultCodeEnum.UNAUTHORIZED);
+        }
+    }
+
 }

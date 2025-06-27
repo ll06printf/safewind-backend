@@ -1,5 +1,6 @@
 package com.safewind.infra.basic.dao;
 
+import com.safewind.common.page.Page;
 import com.safewind.infra.basic.entity.SysMenu;
 import org.apache.ibatis.annotations.Param;
 import java.util.List;
@@ -70,5 +71,19 @@ public interface SysMenuDao {
      */
     int deleteById(Long menuId);
 
+    /**
+     * 查询权限
+     * */
+    SysMenu queryByRoleId(Long roleId);
+
+    /**
+     * @param: sysMenu
+     * @param: page
+     * @return List<SysMenu>
+     * @author Darven
+     * @date 2025/6/27 15:37
+     * @description: 分页查询
+     */
+    List<SysMenu> queryAllByLimit(@Param("sysMenu") SysMenu sysMenu, @Param("page") Page page);
 }
 

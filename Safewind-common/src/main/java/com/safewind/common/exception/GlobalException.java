@@ -102,11 +102,11 @@ public class GlobalException {
      * @return Result<Object>
      * @author Darven
      * @date 2025/6/27 12:12
-     * @description:
+     * @description: 处理空指针异常
      */
     @ExceptionHandler({NullPointerException.class})
     public Result<Object> handleNullPointerException(HttpServletRequest request, NullPointerException e) {
-        log.error("{},param is null",request.getRequestURI(),e);
+        log.error("{},null point error",request.getRequestURI(),e);
         return Result.fail(ResultCodeEnum.VALIDATION_FAILED,e.getMessage());
     }
 }

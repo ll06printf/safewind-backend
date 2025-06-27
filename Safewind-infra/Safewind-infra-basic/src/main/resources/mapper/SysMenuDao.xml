@@ -25,6 +25,7 @@
         <result property="remark" column="remark" jdbcType="VARCHAR"/>
     </resultMap>
 
+
     <!--查询单个-->
     <select id="queryById" resultMap="SysMenuMap">
         select menu_id,
@@ -58,69 +59,70 @@
         visible, status, perms, icon, create_by, create_time, update_by, update_time, remark
         from sys_menu
         <where>
-            <if test="menuId != null">
-                and menu_id = #{menuId}
+            <if test="sysMenu.menuId != null">
+                and menu_id = #{sysMenu.menuId}
             </if>
-            <if test="menuName != null and menuName != ''">
-                and menu_name = #{menuName}
+            <if test="sysMenu.menuName != null and sysMenu.menuName != ''">
+                and menu_name = #{sysMenu.menuName}
             </if>
-            <if test="parentId != null">
-                and parent_id = #{parentId}
+            <if test="sysMenu.parentId != null">
+                and parent_id = #{sysMenu.parentId}
             </if>
-            <if test="orderNum != null">
-                and order_num = #{orderNum}
+            <if test="sysMenu.orderNum != null">
+                and order_num = #{sysMenu.orderNum}
             </if>
-            <if test="path != null and path != ''">
-                and path = #{path}
+            <if test="sysMenu.path != null and sysMenu.path != ''">
+                and path = #{sysMenu.path}
             </if>
-            <if test="component != null and component != ''">
-                and component = #{component}
+            <if test="sysMenu.component != null and sysMenu.component != ''">
+                and component = #{sysMenu.component}
             </if>
-            <if test="query != null and query != ''">
-                and query = #{query}
+            <if test="sysMenu.query != null and sysMenu.query != ''">
+                and query = #{sysMenu.query}
             </if>
-            <if test="routeName != null and routeName != ''">
-                and route_name = #{routeName}
+            <if test="sysMenu.routeName != null and sysMenu.routeName != ''">
+                and route_name = #{sysMenu.routeName}
             </if>
-            <if test="isFrame != null">
-                and is_frame = #{isFrame}
+            <if test="sysMenu.isFrame != null">
+                and is_frame = #{sysMenu.isFrame}
             </if>
-            <if test="isCache != null">
-                and is_cache = #{isCache}
+            <if test="sysMenu.isCache != null">
+                and is_cache = #{sysMenu.isCache}
             </if>
-            <if test="menuType != null and menuType != ''">
-                and menu_type = #{menuType}
+            <if test="sysMenu.menuType != null and sysMenu.menuType != ''">
+                and menu_type = #{sysMenu.menuType}
             </if>
-            <if test="visible != null and visible != ''">
-                and visible = #{visible}
+            <if test="sysMenu.visible != null and sysMenu.visible != ''">
+                and visible = #{sysMenu.visible}
             </if>
-            <if test="status != null and status != ''">
-                and status = #{status}
+            <if test="sysMenu.status != null and sysMenu.status != ''">
+                and status = #{sysMenu.status}
             </if>
-            <if test="perms != null and perms != ''">
-                and perms = #{perms}
+            <if test="sysMenu.perms != null and sysMenu.perms != ''">
+                and perms = #{sysMenu.perms}
             </if>
-            <if test="icon != null and icon != ''">
-                and icon = #{icon}
+            <if test="sysMenu.icon != null and sysMenu.icon != ''">
+                and icon = #{sysMenu.icon}
             </if>
-            <if test="createBy != null and createBy != ''">
-                and create_by = #{createBy}
+            <if test="sysMenu.createBy != null and sysMenu.createBy != ''">
+                and create_by = #{sysMenu.createBy}
             </if>
-            <if test="createTime != null">
-                and create_time = #{createTime}
+            <if test="sysMenu.createTime != null">
+                and create_time = #{sysMenu.createTime}
             </if>
-            <if test="updateBy != null and updateBy != ''">
-                and update_by = #{updateBy}
+            <if test="sysMenu.updateBy != null and sysMenu.updateBy != ''">
+                and update_by = #{sysMenu.updateBy}
             </if>
-            <if test="updateTime != null">
-                and update_time = #{updateTime}
+            <if test="sysMenu.updateTime != null">
+                and update_time = #{sysMenu.updateTime}
             </if>
-            <if test="remark != null and remark != ''">
-                and remark = #{remark}
+            <if test="sysMenu.remark != null and sysMenu.remark != ''">
+                and remark = #{sysMenu.remark}
             </if>
         </where>
-        limit #{pageable.offset}, #{pageable.pageSize}
+        limit #{page.pageNum}, #{page.pageSize}
     </select>
+
 
     <!--统计总行数-->
     <select id="count" resultType="java.lang.Long">
@@ -315,6 +317,29 @@
         from sys_menu
         where menu_id = #{menuId}
     </delete>
+
+    <select id="queryByRoleId" resultType="com.safewind.infra.basic.entity.SysMenu">
+        select m.menu_id,
+               menu_name,
+               parent_id,
+               order_num,
+               path,
+               component,
+               query,
+               route_name,
+               is_frame,
+               is_cache,
+               menu_type,
+               visible,
+               m.status,
+               perms,
+               icon
+        from sys_menu as m
+                 left join sys_role_menu sm on sm.menu_id = m.menu_id
+                 left join sys_role r on r.role_id = sm.role_id
+        where r.role_id = #{roleId}
+    </select>
+
 
 </mapper>
 

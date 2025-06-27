@@ -77,7 +77,9 @@ public class Result<T> implements Serializable {
         return build(code, message, data, true);
     }
 
-
+    public static <T> Result<T> success(String message){
+        return build(ResultCodeEnum.SUCCESS.getCode(),message,null,true);
+    }
     //==============================失败=========================
 
     public static <T> Result<T> fail(T data) {
