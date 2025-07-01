@@ -1,5 +1,6 @@
 package com.safewind.infra.basic.dao;
 
+import com.safewind.common.page.Page;
 import com.safewind.infra.basic.entity.SysRole;
 import org.apache.ibatis.annotations.Param;
 import java.util.List;
@@ -69,5 +70,13 @@ public interface SysRoleDao {
      */
     int deleteById(Long roleId);
 
+    /**
+     * 查询角色列表
+     *
+     * @param sysRole 角色信息
+     * @param page 分页参数
+     * @return 角色列表
+     */
+    List<SysRole> queryRole(@Param("sysRole") SysRole sysRole, @Param("page") Page page);
 }
 

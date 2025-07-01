@@ -1,10 +1,14 @@
 package com.safewind.infra.basic.service.impl;
 
+import com.safewind.common.page.Page;
+import com.safewind.common.page.PageUtils;
 import com.safewind.infra.basic.entity.SysRole;
 import com.safewind.infra.basic.dao.SysRoleDao;
 import com.safewind.infra.basic.service.SysRoleService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * 角色信息表(SysRole)表服务实现类
@@ -62,5 +66,17 @@ public class SysRoleServiceImpl implements SysRoleService {
     @Override
     public boolean deleteById(Long roleId) {
         return this.sysRoleDao.deleteById(roleId) > 0;
+    }
+
+    @Override
+    public List<SysRole> queryRole(SysRole sysRole, Page page) {
+        // 设置分页参数，偏移量
+        page.setPageNum(PageUtils.getOffset(page.getPageNum(), page.getPageSize()));
+        return this.sysRoleDao.queryRole(sysRole, page);
+    }
+
+    @Override
+    public long count() {
+        return this.sysRoleDao.count(new SysRole());
     }
 }
