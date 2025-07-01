@@ -85,5 +85,15 @@ public interface SysMenuDao {
      * @description: 分页查询
      */
     List<SysMenu> queryAllByLimit(@Param("sysMenu") SysMenu sysMenu, @Param("page") Page page);
+
+    /**
+     * @param
+     * @param sysMenu
+     * @return List<SysMenu>
+     * @author Darven
+     * @date 2025/6/29 20:24
+     * @description: 查询所有菜单列表
+     */
+    List<SysMenu> query(SysMenu sysMenu);
 }
 

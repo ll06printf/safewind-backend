@@ -29,7 +29,6 @@ public class EntityFillAspect {
     */
     @Pointcut("@annotation(com.safewind.common.annotation.EntityFill)")
     public void pointCut(){
-
     }
 
     /**

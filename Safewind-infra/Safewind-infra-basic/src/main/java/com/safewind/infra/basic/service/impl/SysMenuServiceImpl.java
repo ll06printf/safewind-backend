@@ -7,7 +7,6 @@ import com.safewind.infra.basic.entity.SysMenu;
 import com.safewind.infra.basic.dao.SysMenuDao;
 import com.safewind.infra.basic.service.SysMenuService;
 import jakarta.annotation.Resource;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -118,7 +117,7 @@ public class SysMenuServiceImpl implements SysMenuService {
      * @description: 查询所有菜单
      */
     @Override
-    public List<SysMenu> query() {
-        return this.sysMenuDao.queryAllByLimit(new SysMenu(), new Page());
+    public List<SysMenu> query(SysMenu sysMenu) {
+        return this.sysMenuDao.query(sysMenu);
     }
 }

@@ -1,6 +1,5 @@
 package com.safewind.domain.service.impl;
 
-import com.safewind.common.annotation.EntityFill;
 import com.safewind.common.page.Page;
 import com.safewind.common.page.PageResult;
 import com.safewind.common.page.PageUtils;
@@ -10,11 +9,9 @@ import com.safewind.domain.converter.MenuDomainConverter;
 import com.safewind.domain.service.MenuDomainService;
 import com.safewind.infra.basic.entity.SysMenu;
 import com.safewind.infra.basic.service.SysMenuService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -88,7 +85,7 @@ public class MenuDomainServiceImpl implements MenuDomainService {
         PageResult<MenuListBO> menuListBOPageResult = new PageResult<>();
         menuListBOPageResult.setPageNum(menuListBO.getPageNum());
         menuListBOPageResult.setPageSize(menuListBO.getPageSize());
-        menuListBOPageResult.setTotalPages(PageUtils.getTotalPage(total,menuListBO.getPageSize()));
+        menuListBOPageResult.setTotalPages(PageUtils.getTotalPage(total, menuListBO.getPageSize()));
         menuListBOPageResult.setData(menuListBOList);
         menuListBOPageResult.setTotalSize(total);
         return menuListBOPageResult;
@@ -101,8 +98,12 @@ public class MenuDomainServiceImpl implements MenuDomainService {
      * @description: 查询所有菜单，然后返回菜单树
      */
     @Override
-    public List<MenuListBO> queryMenuTree() {
-        List<SysMenu> sysMenuList = sysMenuService.query();
+    public List<MenuListBO> queryMenuTree(MenuListBO menuListBO) {
+        // 封装查询条件
+        SysMenu sysMenu = new SysMenu();
+        sysMenu.setStatus(menuListBO.getStatus());
+        sysMenu.setMenuName(menuListBO.getMenuName());
+        List<SysMenu> sysMenuList = sysMenuService.query(sysMenu);
         // 转换
         List<MenuListBO> menuListBOList = MenuDomainConverter.INSTANCE.entityToListBO(sysMenuList);
         // 封装成菜单树
@@ -110,36 +111,44 @@ public class MenuDomainServiceImpl implements MenuDomainService {
     }
 
     /**
-     * @param: menuListBOList
      * @return List<MenuListBO>
+     * @param: menuListBOList
      * @author Darven
      * @date 2025/6/27 17:26
      * @description: 构建菜单树
      */
     private List<MenuListBO> buildTree(List<MenuListBO> menuListBOList) {
-        List<MenuListBO> list=new ArrayList<>();
+        List<MenuListBO> list = new ArrayList<>();
         // 获取map
         Map<Long, MenuListBO> menuListBOMap = menuListBOList.stream()
-                .collect(Collectors
-                        .toMap(MenuListBO::getMenuId, m -> m));
+                .collect(Collectors.toMap(MenuListBO::getMenuId, m -> m));
+
         // 遍历组装树
         for (MenuListBO b : menuListBOList) {
             Long parentId = b.getParentId();
+
             // 子节点
             if (parentId != null && parentId != 0) {
                 MenuListBO parentMenu = menuListBOMap.get(parentId);
-                if(parentMenu.getMenuListBOList()==null){
-                    List<MenuListBO> childList=new ArrayList<>();
-                    childList.add(b);
-                }else{
-                    parentMenu.getMenuListBOList().add(b);
+                if (parentMenu != null) {
+                    if (parentMenu.getMenuListBOList() == null) {
+                        List<MenuListBO> childList = new ArrayList<>();
+                        childList.add(b);
+                        parentMenu.setMenuListBOList(childList);
+                    } else {
+                        parentMenu.getMenuListBOList().add(b);
+                    }
+                } else {
+                    // 如果找不到父节点，也作为根节点加入
+                    list.add(b);
                 }
-            }
-            // 父节点
-            else{
+            } else {
+                // parentId == null 或 == 0 的情况，也可以统一处理或保留原意
                 list.add(b);
             }
         }
+
         return list;
     }
+
 }

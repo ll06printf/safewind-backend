@@ -8,6 +8,7 @@ import com.safewind.common.page.PageResult;
 import com.safewind.domain.bo.MenuBO;
 import com.safewind.domain.bo.MenuListBO;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
@@ -23,12 +24,12 @@ public interface MenuConverter {
     MenuConverter INSTANCE= Mappers.getMapper(MenuConverter.class);
 
     MenuBO menuDTOToBO(MenuDTO menuDTO);
-
-    MenuVO menuBOToVO(MenuBO menuBO);
+    @Mapping(source = "menuListBOList", target = "menuVOList")
+    MenuVO menuBOToVO(MenuListBO menuListBO);
 
     MenuListBO menuQueryDTOToBO(MenuQueryDTO menuQueryDTO);
 
     PageResult<MenuVO> pageMenuBOListToMenuVOList(PageResult<MenuListBO> menuListBOList);
-
+    @Mapping(source = "menuListBOList", target = "menuVOList")
     List<MenuVO> menuBOListToMenuVOList(List<MenuListBO> menuListBOList);
 }
