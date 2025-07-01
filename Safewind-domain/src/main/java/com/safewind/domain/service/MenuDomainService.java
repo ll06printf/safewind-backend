@@ -21,6 +21,5 @@ public interface MenuDomainService {
     // 查询菜单（模糊查询）
     PageResult<MenuListBO> queryMenu(MenuListBO menuListBO);
     // 查询树状菜单
-    List<MenuListBO> queryMenuTree();
-
+    List<MenuListBO> queryMenuTree(MenuListBO menuListBO);
 }

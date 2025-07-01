@@ -9,9 +9,8 @@ import lombok.EqualsAndHashCode;
  * @createTime: 2025-06-27  13:41
  * @description: 查询分业
  */
-@EqualsAndHashCode(callSuper = true)
 @Data
-public class MenuQueryDTO extends Page {
+public class MenuQueryDTO {
     /**
      * 菜单名称
      */

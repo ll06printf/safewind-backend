@@ -1,6 +1,5 @@
 package com.safewind.infra.basic.service;
 
-import com.safewind.common.annotation.EntityFill;
 import com.safewind.common.page.Page;
 import com.safewind.infra.basic.entity.SysMenu;
 
@@ -67,5 +66,5 @@ public interface SysMenuService {
      * */
     Long count();
 
-    List<SysMenu> query();
+    List<SysMenu> query(SysMenu sysMenu);
 }

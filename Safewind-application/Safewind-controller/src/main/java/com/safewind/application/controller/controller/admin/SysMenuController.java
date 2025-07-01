@@ -26,7 +26,7 @@ import java.util.Objects;
  */
 @RestController
 @RequestMapping("/menu")
-public class MenuController {
+public class SysMenuController {
 
     @Autowired
     private MenuDomainService menuDomainService;
@@ -43,7 +43,6 @@ public class MenuController {
     public Result<Boolean> addMenu(@RequestBody MenuDTO menuDTO){
         // 参数校验
         paramCheck(menuDTO);
-
         // 实体转化
         MenuBO menuBO = MenuConverter.INSTANCE.menuDTOToBO(menuDTO);
         // 业务处理
@@ -73,8 +72,8 @@ public class MenuController {
     }
 
     /**
-     * @param: null
-     * @return null
+     * @param: menuDTO
+     * @return Result<Boolean>
      * @author Darven
      * @date 2025/6/27 13:02
      * @description: 删除菜单
@@ -89,12 +88,13 @@ public class MenuController {
     }
 
     /**
-     * @param: null
-     * @return null
+     * @param: menuQueryDTO
+     * @return Result<PageResult<MenuVO>>
      * @author Darven
-     * @date 2025/6/27 13:24
-     * @description: 查询菜单，树状结构
+     * @date 2025/6/27 13:02
+     * @description: 查询菜单列表，暂时弃用
      */
+    @Deprecated
     @ApiOperationLog(description = "查询菜单列表")
     @PostMapping("/queryMenu")
     public Result<PageResult<MenuVO>> queryMenu(@RequestBody MenuQueryDTO menuQueryDTO){
@@ -111,9 +111,10 @@ public class MenuController {
      * @description: 查询菜单树
      */
     @ApiOperationLog(description = "查询菜单树")
-    @GetMapping("/queryMenuTree")
-    public Result<List<MenuVO>> queryMenuTree(){
-        List<MenuListBO> menuBOList = menuDomainService.queryMenuTree();
+    @PostMapping("/queryMenuTree")
+    public Result<List<MenuVO>> queryMenuTree(@RequestBody MenuQueryDTO menuQueryDTO){
+        MenuListBO menuListBO = MenuConverter.INSTANCE.menuQueryDTOToBO(menuQueryDTO);
+        List<MenuListBO> menuBOList = menuDomainService.queryMenuTree(menuListBO);
         List<MenuVO> menuVOS = MenuConverter.INSTANCE.menuBOListToMenuVOList(menuBOList);
         return Result.success(menuVOS);
     }
@@ -130,12 +131,6 @@ public class MenuController {
         }
         if(StringUtils.isBlank(menuDTO.getMenuType())){
             throw new BizException(MenuExceptionEnum.TYPE_NOT_NULL);
-        }
-        if(StringUtils.isBlank(menuDTO.getPerms())){
-            throw new BizException(MenuExceptionEnum.PERM_NOT_NULL);
-        }
-        if(StringUtils.isBlank(menuDTO.getComponent())){
-            throw new BizException(MenuExceptionEnum.COMPONENT_NOT_NULL);
         }
     }
 }

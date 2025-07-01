@@ -341,5 +341,21 @@
     </select>
 
 
+    <select id="query" resultMap="SysMenuMap">
+        select
+        menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type,
+        visible, status, perms, icon, create_by, create_time, update_by, update_time, remark
+        from sys_menu
+        <where>
+            <if test="menuName != null and menuName != ''">
+                and menu_name like concat('%', #{menuName}, '%')
+            </if>
+            <if test="status != null and status != ''">
+                and status = #{status}
+            </if>
+        </where>
+    </select>
+
+
 </mapper>
 
