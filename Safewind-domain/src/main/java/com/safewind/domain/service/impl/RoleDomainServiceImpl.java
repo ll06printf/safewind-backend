@@ -1,4 +1,4 @@
-package com.safewind.domain.service;
+package com.safewind.domain.service.impl;
 
 import com.safewind.common.enums.RoleExceptionEnum;
 import com.safewind.common.exception.BizException;
@@ -8,6 +8,7 @@ import com.safewind.common.page.PageUtils;
 import com.safewind.domain.bo.RoleBO;
 import com.safewind.domain.bo.RoleListBO;
 import com.safewind.domain.converter.RoleDomainConverter;
+import com.safewind.domain.service.RoleDomainService;
 import com.safewind.infra.basic.entity.SysRole;
 import com.safewind.infra.basic.entity.SysRoleMenu;
 import com.safewind.infra.basic.service.SysRoleMenuService;
