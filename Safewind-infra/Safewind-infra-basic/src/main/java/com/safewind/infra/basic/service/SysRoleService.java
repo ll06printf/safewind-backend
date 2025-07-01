@@ -1,6 +1,10 @@
 package com.safewind.infra.basic.service;
 
+import com.safewind.common.page.Page;
 import com.safewind.infra.basic.entity.SysRole;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 
 /**
@@ -44,4 +48,19 @@ public interface SysRoleService {
      */
     boolean deleteById(Long roleId);
 
+    /**
+     * 查询多条数据
+     *
+     * @param sysRole 查询条件
+     * @param page 分页对象
+     * @return 对象列表
+     */
+    List<SysRole> queryRole(SysRole sysRole, Page page);
+
+    /**
+     * 统计总行数
+     *
+     * @return 总行数
+     */
+    long count();
 }
