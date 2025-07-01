@@ -6,6 +6,8 @@ import com.safewind.infra.basic.service.SysRoleMenuService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 
 /**
  * 角色和菜单关联表(SysRoleMenu)表服务实现类
@@ -63,5 +65,10 @@ public class SysRoleMenuServiceImpl implements SysRoleMenuService {
     @Override
     public boolean deleteById(Long roleId) {
         return this.sysRoleMenuDao.deleteById(roleId) > 0;
+    }
+
+    @Override
+    public boolean insertBatch(List<SysRoleMenu> list) {
+        return this.sysRoleMenuDao.insertBatch(list) > 0;
     }
 }

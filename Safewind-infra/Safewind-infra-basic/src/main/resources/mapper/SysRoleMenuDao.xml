@@ -87,23 +87,23 @@
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="roleId" useGeneratedKeys="true">
-        insert into sys_role_menu(del_flag, create_by, create_time, update_by, update_time)
-        values (#{delFlag}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime})
+        insert into sys_role_menu(role_id,menu_id,del_flag, create_by, create_time, update_by, update_time)
+        values (#{entity.roleId},#{entity.menuId},#{delFlag}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime})
     </insert>
 
     <insert id="insertBatch" keyProperty="roleId" useGeneratedKeys="true">
-        insert into sys_role_menu(del_flag, create_by, create_time, update_by, update_time)
+        insert into sys_role_menu(role_id,menu_id,del_flag, create_by, create_time, update_by, update_time)
         values
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.delFlag}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime})
+            (#{entity.roleId},#{entity.menuId},#{entity.delFlag}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime})
         </foreach>
     </insert>
 
     <insert id="insertOrUpdateBatch" keyProperty="roleId" useGeneratedKeys="true">
-        insert into sys_role_menu(del_flag, create_by, create_time, update_by, update_time)
+        insert into sys_role_menu(role_id,menu_id,del_flag, create_by, create_time, update_by, update_time)
         values
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.delFlag}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime})
+            (#{entity.roleId},#{entity.menuId},#{entity.delFlag}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime})
         </foreach>
         on duplicate key update
         del_flag = values(del_flag),

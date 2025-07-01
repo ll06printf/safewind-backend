@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author: Darven
@@ -62,4 +63,8 @@ public class RoleDTO {
      * 备注
      */
     private String remark;
+    /**
+     * 角色绑定的菜单列表
+     * */
+    private List<Long> menuIds;
 }

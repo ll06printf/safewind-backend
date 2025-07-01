@@ -1,5 +1,7 @@
 package com.safewind.infra.basic.entity;
 
+import com.safewind.common.entity.BaseEntity;
+
 import java.time.LocalDateTime;
 import java.io.Serializable;
 
@@ -9,7 +11,7 @@ import java.io.Serializable;
  * @author Darven
  * @since 2025-05-21 21:46:55
  */
-public class SysRoleMenu implements Serializable {
+public class SysRoleMenu extends BaseEntity implements Serializable {
     private static final long serialVersionUID = -24725410357892961L;
     /**
      * 角色ID
