@@ -1,5 +1,6 @@
 package com.safewind.infra.basic.service.impl;
 
+import com.safewind.common.annotation.EntityFill;
 import com.safewind.infra.basic.entity.SysUserRole;
 import com.safewind.infra.basic.dao.SysUserRoleDao;
 import com.safewind.infra.basic.service.SysUserRoleService;
@@ -35,6 +36,7 @@ public class SysUserRoleServiceImpl implements SysUserRoleService {
      * @param sysUserRole 实例对象
      * @return 实例对象
      */
+    @EntityFill
     @Override
     public SysUserRole insert(SysUserRole sysUserRole) {
         this.sysUserRoleDao.insert(sysUserRole);
@@ -47,6 +49,7 @@ public class SysUserRoleServiceImpl implements SysUserRoleService {
      * @param sysUserRole 实例对象
      * @return 实例对象
      */
+    @EntityFill
     @Override
     public SysUserRole update(SysUserRole sysUserRole) {
         this.sysUserRoleDao.update(sysUserRole);

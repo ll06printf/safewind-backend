@@ -1,5 +1,6 @@
 package com.safewind.infra.basic.service.impl;
 
+import com.safewind.common.annotation.EntityFill;
 import com.safewind.infra.basic.entity.SysClub;
 import com.safewind.infra.basic.dao.SysClubDao;
 import com.safewind.infra.basic.service.SysClubService;
@@ -36,6 +37,7 @@ public class SysClubServiceImpl implements SysClubService {
      * @param sysClub 实例对象
      * @return 实例对象
      */
+    @EntityFill
     @Override
     public SysClub insert(SysClub sysClub) {
         this.sysClubDao.insert(sysClub);
@@ -48,6 +50,7 @@ public class SysClubServiceImpl implements SysClubService {
      * @param sysClub 实例对象
      * @return 实例对象
      */
+    @EntityFill
     @Override
     public SysClub update(SysClub sysClub) {
         this.sysClubDao.update(sysClub);

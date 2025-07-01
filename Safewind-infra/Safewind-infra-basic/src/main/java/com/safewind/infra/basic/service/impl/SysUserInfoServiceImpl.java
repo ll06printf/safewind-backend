@@ -1,5 +1,6 @@
 package com.safewind.infra.basic.service.impl;
 
+import com.safewind.common.annotation.EntityFill;
 import com.safewind.infra.basic.entity.SysUserInfo;
 import com.safewind.infra.basic.dao.SysUserInfoDao;
 import com.safewind.infra.basic.service.SysUserInfoService;
@@ -35,6 +36,7 @@ public class SysUserInfoServiceImpl implements SysUserInfoService {
      * @param sysUserInfo 实例对象
      * @return 实例对象
      */
+    @EntityFill
     @Override
     public SysUserInfo insert(SysUserInfo sysUserInfo) {
         this.sysUserInfoDao.insert(sysUserInfo);
@@ -47,6 +49,7 @@ public class SysUserInfoServiceImpl implements SysUserInfoService {
      * @param sysUserInfo 实例对象
      * @return 实例对象
      */
+    @EntityFill
     @Override
     public SysUserInfo update(SysUserInfo sysUserInfo) {
         this.sysUserInfoDao.update(sysUserInfo);

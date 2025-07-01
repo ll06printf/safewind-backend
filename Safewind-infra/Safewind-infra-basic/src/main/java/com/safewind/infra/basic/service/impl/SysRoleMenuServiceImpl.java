@@ -1,5 +1,6 @@
 package com.safewind.infra.basic.service.impl;
 
+import com.safewind.common.annotation.EntityFill;
 import com.safewind.infra.basic.entity.SysRoleMenu;
 import com.safewind.infra.basic.dao.SysRoleMenuDao;
 import com.safewind.infra.basic.service.SysRoleMenuService;
@@ -38,6 +39,7 @@ public class SysRoleMenuServiceImpl implements SysRoleMenuService {
      * @param sysRoleMenu 实例对象
      * @return 实例对象
      */
+    @EntityFill
     @Override
     public SysRoleMenu insert(SysRoleMenu sysRoleMenu) {
         this.sysRoleMenuDao.insert(sysRoleMenu);
@@ -50,6 +52,7 @@ public class SysRoleMenuServiceImpl implements SysRoleMenuService {
      * @param sysRoleMenu 实例对象
      * @return 实例对象
      */
+    @EntityFill
     @Override
     public SysRoleMenu update(SysRoleMenu sysRoleMenu) {
         this.sysRoleMenuDao.update(sysRoleMenu);
@@ -67,6 +70,7 @@ public class SysRoleMenuServiceImpl implements SysRoleMenuService {
         return this.sysRoleMenuDao.deleteById(roleId) > 0;
     }
 
+    @EntityFill  // todo 一旦涉及插入/修改，并且实体继承BaseEntity，需要添加@EntityFill
     @Override
     public boolean insertBatch(List<SysRoleMenu> list) {
         return this.sysRoleMenuDao.insertBatch(list) > 0;

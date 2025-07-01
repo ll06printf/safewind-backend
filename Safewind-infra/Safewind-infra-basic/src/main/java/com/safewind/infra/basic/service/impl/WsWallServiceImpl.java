@@ -1,5 +1,6 @@
 package com.safewind.infra.basic.service.impl;
 
+import com.safewind.common.annotation.EntityFill;
 import com.safewind.infra.basic.entity.WsWall;
 import com.safewind.infra.basic.dao.WsWallDao;
 import com.safewind.infra.basic.service.WsWallService;
@@ -34,6 +35,7 @@ public class WsWallServiceImpl implements WsWallService {
      * @param wsWall 实例对象
      * @return 实例对象
      */
+    @EntityFill
     @Override
     public WsWall insert(WsWall wsWall) {
         this.wsWallDao.insert(wsWall);
@@ -46,6 +48,7 @@ public class WsWallServiceImpl implements WsWallService {
      * @param wsWall 实例对象
      * @return 实例对象
      */
+    @EntityFill
     @Override
     public WsWall update(WsWall wsWall) {
         this.wsWallDao.update(wsWall);

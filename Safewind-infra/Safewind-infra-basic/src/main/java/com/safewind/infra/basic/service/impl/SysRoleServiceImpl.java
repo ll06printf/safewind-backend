@@ -1,5 +1,6 @@
 package com.safewind.infra.basic.service.impl;
 
+import com.safewind.common.annotation.EntityFill;
 import com.safewind.common.page.Page;
 import com.safewind.common.page.PageUtils;
 import com.safewind.infra.basic.entity.SysRole;
@@ -39,6 +40,7 @@ public class SysRoleServiceImpl implements SysRoleService {
      * @param sysRole 实例对象
      * @return 实例对象
      */
+    @EntityFill
     @Override
     public SysRole insert(SysRole sysRole) {
         this.sysRoleDao.insert(sysRole);
@@ -51,6 +53,7 @@ public class SysRoleServiceImpl implements SysRoleService {
      * @param sysRole 实例对象
      * @return 实例对象
      */
+    @EntityFill
     @Override
     public SysRole update(SysRole sysRole) {
         this.sysRoleDao.update(sysRole);
