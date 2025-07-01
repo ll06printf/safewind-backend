@@ -88,6 +88,14 @@ public class PageResult<T>{
             return this;
         }
 
+        public Builder<T> totalPages(Long totalPages){
+            if (totalPages == null || totalPages<=0) {
+                totalPages = 0L;
+            }
+            this.totalPages = totalPages;
+            return this;
+        }
+
         public Builder<T> data(List<T> data) {
             if (data != null) {
                 this.data = data;
