@@ -68,6 +68,11 @@ public class RoleDomainServiceImpl implements RoleDomainService {
     public Boolean addRole(RoleBO roleBO) {
         // 实体转换
         SysRole sysRole = RoleDomainConverter.INSTANCE.roleBOToEntity(roleBO);
+        // 检查是否存在
+        SysRole query = sysRoleService.queryById(sysRole.getRoleId());
+        if(Objects.nonNull(query)){
+            throw new BizException(RoleExceptionEnum.ROLE_EXIST);
+        }
         // 添加
         SysRole insert = sysRoleService.insert(sysRole);
         return Objects.nonNull(insert);

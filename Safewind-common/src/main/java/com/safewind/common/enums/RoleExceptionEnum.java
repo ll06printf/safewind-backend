@@ -22,8 +22,8 @@ public enum RoleExceptionEnum implements BaseExceptionInterface {
     REMARK_NOT_NULL(4007,"角色备注不能为空"),
     ID_NOT_NULL(4008,"角色ID不能为空"),
     ROLE_IS_NULL(4009,"角色不存在"),
+    ROLE_EXIST(4010,"角色已存在"),
     ;
-
     private final Integer code;
     private final String message;
 
