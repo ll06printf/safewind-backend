@@ -63,4 +63,8 @@ public class RoleBO extends Page {
      * 备注
      */
     private String remark;
+    /**
+     * 角色绑定的菜单列表
+     * */
+    private List<Long> menuIds;
 }
