@@ -28,7 +28,7 @@ public class SysRoleMenuServiceImpl implements SysRoleMenuService {
      * @return 实例对象
      */
     @Override
-    public SysRoleMenu queryById(Long roleId) {
+    public List<SysRoleMenu> queryById(Long roleId) {
         return this.sysRoleMenuDao.queryById(roleId);
     }
 
@@ -54,9 +54,9 @@ public class SysRoleMenuServiceImpl implements SysRoleMenuService {
      */
     @EntityFill
     @Override
-    public SysRoleMenu update(SysRoleMenu sysRoleMenu) {
-        this.sysRoleMenuDao.update(sysRoleMenu);
-        return this.queryById(sysRoleMenu.getRoleId());
+    public boolean update(SysRoleMenu sysRoleMenu) {
+        int update = this.sysRoleMenuDao.update(sysRoleMenu);
+        return update>0;
     }
 
     /**
@@ -67,7 +67,7 @@ public class SysRoleMenuServiceImpl implements SysRoleMenuService {
      */
     @Override
     public boolean deleteById(Long roleId) {
-        return this.sysRoleMenuDao.deleteById(roleId) > 0;
+        return this.sysRoleMenuDao.deleteById(roleId) >0;
     }
 
     @EntityFill  // todo 一旦涉及插入/修改，并且实体继承BaseEntity，需要添加@EntityFill

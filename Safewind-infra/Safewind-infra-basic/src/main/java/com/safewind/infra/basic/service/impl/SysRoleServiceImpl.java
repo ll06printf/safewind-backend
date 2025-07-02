@@ -5,6 +5,7 @@ import com.safewind.common.page.PageUtils;
 import com.safewind.common.annotation.EntityFill;
 import com.safewind.infra.basic.entity.SysRole;
 import com.safewind.infra.basic.dao.SysRoleDao;
+import com.safewind.infra.basic.entity.SysUserRole;
 import com.safewind.infra.basic.service.SysRoleService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;

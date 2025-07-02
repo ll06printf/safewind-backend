@@ -1,7 +1,10 @@
 package com.safewind.infra.basic.dao;
 
+import com.safewind.infra.basic.entity.RoleUser;
 import com.safewind.infra.basic.entity.SysUserRole;
 import org.apache.ibatis.annotations.Param;
+
+import javax.management.relation.Role;
 import java.util.List;
 
 /**
@@ -70,5 +73,20 @@ public interface SysUserRoleDao {
      */
     int deleteById(Long userId);
 
+    /**
+     * 查询未分配角色的用户
+     *
+     * @param roleUser 实体对象
+     * @return  列表
+     */
+    List<RoleUser> queryUnDistributionRole(@Param("roleUser") RoleUser roleUser);
+
+    /**
+     * 查询未分配角色的用户数量
+     *
+     * @param roleUser 角色用户
+     * @return 数量
+     */
+    long queryUnDistributionRoleCount(RoleUser roleUser);
 }
 

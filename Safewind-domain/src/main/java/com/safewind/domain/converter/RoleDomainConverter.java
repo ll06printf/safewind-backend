@@ -2,6 +2,9 @@ package com.safewind.domain.converter;
 
 import com.safewind.domain.bo.RoleBO;
 import com.safewind.domain.bo.RoleListBO;
+import com.safewind.domain.bo.RoleUserListBO;
+import com.safewind.domain.bo.RoleUserQueryBO;
+import com.safewind.infra.basic.entity.RoleUser;
 import com.safewind.infra.basic.entity.SysRole;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -20,4 +23,8 @@ public interface RoleDomainConverter {
     SysRole roleBOToEntity(RoleBO roleBO);
 
     List<RoleListBO> entityToListBO(List<SysRole> sysRoleList);
+
+    RoleUser roleUserQueryBOToEntity(RoleUserQueryBO roleUserQueryBO);
+
+    List<RoleUserListBO> roleUserListToListBO(List<RoleUser> roleUserList);
 }

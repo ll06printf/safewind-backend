@@ -18,7 +18,7 @@ public interface SysRoleMenuDao {
      * @param roleId 主键
      * @return 实例对象
      */
-    SysRoleMenu queryById(Long roleId);
+    List<SysRoleMenu> queryById(Long roleId);
 
 
     /**

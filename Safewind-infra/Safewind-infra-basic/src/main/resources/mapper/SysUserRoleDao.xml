@@ -12,6 +12,15 @@
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
+    <!--roleUser实体映射-->
+    <resultMap type="com.safewind.infra.basic.entity.RoleUser" id="RoleUserMap">
+        <result property="userId" column="id" jdbcType="INTEGER"/>
+        <result property="studentId" column="student_id" jdbcType="VARCHAR"/>
+        <result property="userName" column="name" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
     <!--查询单个-->
     <select id="queryById" resultMap="SysUserRoleMap">
         select user_id,
@@ -85,25 +94,71 @@
         </where>
     </select>
 
+    <!--查询未分配的用户信息-->
+    <select id="queryUnDistributionRole" resultMap="RoleUserMap">
+        SELECT su.id,
+        su.student_id,
+        sui.name,
+        su.email,
+        su.create_time
+        FROM sys_user su
+        left join sys_user_info sui on sui.sys_user_id = su.id
+        left join sys_user_role sur on sur.user_id=su.id
+        left join sys_role sr on sr.role_id=sur.role_id
+        WHERE su.del_flag = '0'
+        and ( sr.role_id !=#{roleUser.roleId} OR sr.role_id IS NULL )
+        AND su.id NOT IN ( SELECT su.id FROM sys_user su JOIN sys_user_role sur ON sur.user_id = su.id AND sur.role_id =#{roleUser.roleId} )
+        <!-- 按用户名模糊匹配 -->
+        <if test="roleUser.userName != null and roleUser.userName != ''">
+            AND sui.name LIKE CONCAT('%', #{roleUser.userName}, '%')
+        </if>
+        <!-- 按邮箱前缀匹配 -->
+        <if test="roleUser.email != null and roleUser.email != ''">
+            AND su.email LIKE CONCAT(#{roleUser.email}, '%')
+        </if>
+        limit #{roleUser.pageNum},#{roleUser.pageSize}
+    </select>
+
+    <!--查询未分配总数-->
+    <select id="queryUnDistributionRoleCount" resultType="java.lang.Long">
+        SELECT count(*)
+        FROM sys_user su
+        left join sys_user_info sui on sui.sys_user_id = su.id
+        left join sys_user_role sur on sur.user_id=su.id
+        left join sys_role sr on sr.role_id=sur.role_id
+        WHERE su.del_flag = '0'
+        and ( sr.role_id !=#{roleUser.roleId} OR sr.role_id IS NULL )
+        AND su.id NOT IN ( SELECT su.id FROM sys_user su JOIN sys_user_role sur ON sur.user_id = su.id AND sur.role_id =#{roleUser.roleId} )
+        <!-- 按用户名模糊匹配 -->
+        <if test="roleUser.userName != null and roleUser.userName != ''">
+            AND sui.name LIKE CONCAT('%', #{roleUser.userName}, '%')
+        </if>
+        <!-- 按邮箱前缀匹配 -->
+        <if test="roleUser.email != null and roleUser.email != ''">
+            AND su.email LIKE CONCAT(#{roleUser.email}, '%')
+        </if>
+        limit #{roleUser.pageNum},#{roleUser.pageSize}
+    </select>
+
     <!--新增所有列-->
     <insert id="insert" keyProperty="userId" useGeneratedKeys="true">
-        insert into sys_user_role(del_flag, create_by, create_time, update_by, update_time)
-        values (#{delFlag}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime})
+        insert into sys_user_role(role_id,user_id,del_flag, create_by, create_time, update_by, update_time)
+        values (#{roleId},#{userId},#{delFlag}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime})
     </insert>
 
     <insert id="insertBatch" keyProperty="userId" useGeneratedKeys="true">
-        insert into sys_user_role(del_flag, create_by, create_time, update_by, update_time)
+        insert into sys_user_role(role_id,user_id,del_flag, create_by, create_time, update_by, update_time)
         values
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.delFlag}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime})
+            (#{entity.roleId},#{entity.userId},#{entity.delFlag}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime})
         </foreach>
     </insert>
 
     <insert id="insertOrUpdateBatch" keyProperty="userId" useGeneratedKeys="true">
-        insert into sys_user_role(del_flag, create_by, create_time, update_by, update_time)
+        insert into sys_user_role(role_id,user_id,del_flag, create_by, create_time, update_by, update_time)
         values
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.delFlag}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime})
+            (#{entities.roleId},#{entity.userId},#{entity.delFlag}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime})
         </foreach>
         on duplicate key update
         del_flag = values(del_flag),

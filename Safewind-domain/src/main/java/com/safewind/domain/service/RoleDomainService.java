@@ -1,8 +1,7 @@
 package com.safewind.domain.service;
 
 import com.safewind.common.page.PageResult;
-import com.safewind.domain.bo.RoleBO;
-import com.safewind.domain.bo.RoleListBO;
+import com.safewind.domain.bo.*;
 
 /**
  * @author: Darven
@@ -18,4 +17,8 @@ public interface RoleDomainService {
     Boolean updateRole(RoleBO roleBO);
     // 删除角色
     boolean deleteRole(Long roleId);
+    // 分配用户
+    boolean distributionRole(RoleUserBO roleUserBO);
+    // 未分配的角色列表
+    PageResult<RoleUserListBO> queryUnDistributionRole(RoleUserQueryBO roleUserQueryBO);
 }

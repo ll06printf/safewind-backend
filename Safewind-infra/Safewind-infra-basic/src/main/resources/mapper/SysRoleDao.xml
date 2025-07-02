@@ -144,19 +144,19 @@
 
     <select id="queryRole" resultMap="SysRoleMap">
         select
-            role_id, role_name, role_key, role_sort, data_scope, menu_check_strictly, dept_check_strictly, status, del_flag,
-            create_by, create_time, update_by, update_time, remark
+        role_id, role_name, role_key, role_sort, data_scope, menu_check_strictly, dept_check_strictly, status, del_flag,
+        create_by, create_time, update_by, update_time, remark
         from sys_role
         <where>
             del_flag = '0'
             <if test="sysRole.roleName != null and sysRole.roleName != ''">
-                and role_name like concat('%',#{roleName},'%')
+                and role_name like concat('%',#{sysRole.roleName},'%')
             </if>
             <if test="sysRole.roleKey != null and sysRole.roleKey != ''">
-                and role_key like  concat('%',#{roleKey},'%')
+                and role_key like concat('%',#{sysRole.roleKey},'%')
             </if>
-            <if test="sysRole.roleSort != null">
-                and role_sort = #{roleSort}
+            <if test="sysRole.status != null and sysRole.status != ''">
+                and `status` = #{sysRole.status}
             </if>
         </where>
         order by role_sort

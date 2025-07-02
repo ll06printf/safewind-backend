@@ -3,14 +3,16 @@ package com.safewind.application.controller.controller.admin;
 import com.safewind.application.controller.converter.RoleConverter;
 import com.safewind.application.controller.dto.RoleDTO;
 import com.safewind.application.controller.dto.RoleQueryDTO;
+import com.safewind.application.controller.dto.RoleUserDTO;
+import com.safewind.application.controller.dto.RoleUserQueryDTO;
+import com.safewind.application.controller.vo.RoleUserVO;
 import com.safewind.application.controller.vo.RoleVO;
 import com.safewind.common.annotation.ApiOperationLog;
 import com.safewind.common.enums.RoleExceptionEnum;
 import com.safewind.common.exception.BizException;
 import com.safewind.common.page.PageResult;
 import com.safewind.common.utils.Result;
-import com.safewind.domain.bo.RoleBO;
-import com.safewind.domain.bo.RoleListBO;
+import com.safewind.domain.bo.*;
 import com.safewind.domain.service.RoleDomainService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @author: Darven
@@ -61,7 +66,7 @@ public class SysRoleController {
 
     @ApiOperationLog(description = "删除角色列表")
     @PostMapping("/deleteRole")
-    public Result<RoleVO> deleteRole(@RequestBody RoleDTO roleDTO){
+    public Result<Boolean> deleteRole(@RequestBody RoleDTO roleDTO){
         if(roleDTO.getRoleId() == null){
             throw new BizException(RoleExceptionEnum.ID_NOT_NULL);
         }
@@ -84,6 +89,48 @@ public class SysRoleController {
         return b?Result.success():Result.fail("修改失败");
     }
 
+    @ApiOperationLog(description = "分配用户")
+    @PostMapping("/distributionRole")
+    public Result<Boolean> distributionRole(@RequestBody RoleUserDTO roleUserDTO) {
+        // 校验角色id
+        checkRoleUser(roleUserDTO);
+        // 转化角色用户
+        RoleUserBO roleUserBO = RoleConverter.INSTANCE.roleUserDTOToBO(roleUserDTO);
+        // 返回结果
+        return roleDomainService.distributionRole(roleUserBO)?Result.success() : Result.fail("分配用户失败");
+    }
+
+    @ApiOperationLog(description = "未分配的角色列表")
+    @PostMapping("/queryUnDistributionRole")
+    public Result<PageResult<RoleUserVO>> queryUnDistributionRole(@RequestBody RoleUserQueryDTO roleUserQueryDTO) {
+        // 实体转化
+        RoleUserQueryBO roleUserQueryBO = RoleConverter.INSTANCE.roleUserQueryDTOToBO(roleUserQueryDTO);
+        // 查询
+        PageResult<RoleUserListBO> roleListBO = roleDomainService.queryUnDistributionRole(roleUserQueryBO);
+        // 实体转化
+        PageResult<RoleUserVO> roleUserVOPageResult = RoleConverter.INSTANCE.pageBOToPageVO(roleListBO);
+        // 返回
+        return Result.success(roleUserVOPageResult);
+    }
+
+    @ApiOperationLog(description = "已分配的角色列表")
+    @PostMapping("/queryDistributionRole")
+    public Result<PageResult<RoleDTO>> queryDistributionRole(@RequestBody RoleUserQueryDTO roleUserQueryDTO) {
+        return null;
+    }
+
+    @ApiOperationLog(description = "取消授权用户")
+    @PostMapping("/cancelAuthorizeUser")
+    public Result<Boolean> cancelAuthorizeUser(@RequestBody RoleDTO roleDTO) {
+        return null;
+    }
+
+    @ApiOperationLog(description = "批量取消授权用户")
+    @PostMapping("/batchCancelAuthorizeUser")
+    public Result<Boolean> batchCancelAuthorizeUser(@RequestBody RoleDTO roleDTO) {
+        return null;
+    }
+
     /**
      * @param: roleDTO
      * @author Darven
@@ -96,6 +143,12 @@ public class SysRoleController {
         }
         if (roleDTO.getRoleKey() == null || StringUtils.isBlank(roleDTO.getRoleKey())) {
             throw new BizException(RoleExceptionEnum.KEY_NOT_NULL);
+        }
+    }
+
+    private void checkRoleUser(RoleUserDTO roleUserDTO){
+        if (roleUserDTO.getRoleId() == null || roleUserDTO.getRoleId() <= 0) {
+            throw new BizException(RoleExceptionEnum.ID_NOT_NULL);
         }
     }
 

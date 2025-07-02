@@ -1,11 +1,15 @@
 package com.safewind.infra.basic.service.impl;
 
 import com.safewind.common.annotation.EntityFill;
+import com.safewind.common.page.PageUtils;
+import com.safewind.infra.basic.entity.RoleUser;
 import com.safewind.infra.basic.entity.SysUserRole;
 import com.safewind.infra.basic.dao.SysUserRoleDao;
 import com.safewind.infra.basic.service.SysUserRoleService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * 用户和角色关联表(SysUserRole)表服务实现类
@@ -65,5 +69,34 @@ public class SysUserRoleServiceImpl implements SysUserRoleService {
     @Override
     public boolean deleteById(Long userId) {
         return this.sysUserRoleDao.deleteById(userId) > 0;
+    }
+
+    /**
+     * 批量插入数据
+     *
+     * @param sysUserRoleList 数据列表
+     * @return 影响行数
+     */
+    @EntityFill // 填充公用属性
+    @Override
+    public long insertBatch(List<SysUserRole> sysUserRoleList) {
+        int i = this.sysUserRoleDao.insertBatch(sysUserRoleList);
+        return i;
+    }
+
+    @Override
+    public List<RoleUser> queryUnDistributionRole(RoleUser roleUser) {
+        roleUser.setPageNum(PageUtils.getOffset(roleUser.getPageNum(), roleUser.getPageSize()));
+        return this.sysUserRoleDao.queryUnDistributionRole(roleUser);
+    }
+
+    @Override
+    public long count(SysUserRole sysUserRole) {
+        return this.sysUserRoleDao.count(sysUserRole);
+    }
+
+    @Override
+    public long queryUnDistributionRoleCount(RoleUser roleUser) {
+        return this.sysUserRoleDao.queryUnDistributionRoleCount(roleUser);
     }
 }

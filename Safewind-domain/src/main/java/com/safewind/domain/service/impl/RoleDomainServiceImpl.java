@@ -5,14 +5,16 @@ import com.safewind.common.exception.BizException;
 import com.safewind.common.page.Page;
 import com.safewind.common.page.PageResult;
 import com.safewind.common.page.PageUtils;
-import com.safewind.domain.bo.RoleBO;
-import com.safewind.domain.bo.RoleListBO;
+import com.safewind.domain.bo.*;
 import com.safewind.domain.converter.RoleDomainConverter;
 import com.safewind.domain.service.RoleDomainService;
+import com.safewind.infra.basic.entity.RoleUser;
 import com.safewind.infra.basic.entity.SysRole;
 import com.safewind.infra.basic.entity.SysRoleMenu;
+import com.safewind.infra.basic.entity.SysUserRole;
 import com.safewind.infra.basic.service.SysRoleMenuService;
 import com.safewind.infra.basic.service.SysRoleService;
+import com.safewind.infra.basic.service.SysUserRoleService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,6 +41,9 @@ public class RoleDomainServiceImpl implements RoleDomainService {
 
     @Autowired
     private TransactionTemplate transactionTemplate;
+
+    @Autowired
+    private SysUserRoleService sysUserRoleService;
 
     /**
      * @return PageResult<RoleListBO>
@@ -124,13 +129,13 @@ public class RoleDomainServiceImpl implements RoleDomainService {
             try {
                 // 修改角色
                 SysRole update = sysRoleService.update(sysRole);
-                // 删除角色权限
-                boolean delete = sysRoleMenuService.deleteById(roleBO.getRoleId());
-
-                if (delete) {
-                    return insertBatch(roleBO, roleBO.getRoleId());
+                // 查询列表
+                List<SysRoleMenu> sysRoleMenus = sysRoleMenuService.queryById(roleBO.getRoleId());
+                if(!sysRoleMenus.isEmpty()){
+                    // 删除角色权限
+                    boolean delete = sysRoleMenuService.deleteById(roleBO.getRoleId());
                 }
-                return false;
+                return insertBatch(roleBO, roleBO.getRoleId());
             } catch (Exception e) {
                 status.setRollbackOnly();
                 log.error("修改角色异常: {}", e.getMessage(), e);
@@ -157,11 +162,11 @@ public class RoleDomainServiceImpl implements RoleDomainService {
             try {
                 // 删除角色
                 boolean b = sysRoleService.deleteById(roleId);
-
-                if (b) {
+                List<SysRoleMenu> sysRoleMenus = sysRoleMenuService.queryById(roleId);
+                if (!sysRoleMenus.isEmpty()) {
                     return sysRoleMenuService.deleteById(roleId);
                 }
-                return false;
+                return true;
             } catch (Exception e) {
                 status.setRollbackOnly();
                 log.error("删除角色失败", e);
@@ -171,6 +176,63 @@ public class RoleDomainServiceImpl implements RoleDomainService {
         return Boolean.TRUE.equals(result); // 安全处理 null 和 false
     }
 
+    /**
+     * @param: roleUserBO
+     * @return boolean
+     * @author Darven
+     * @date 2025/7/2 18:01
+     * @description: 分配用户
+     */
+    @Override
+    public boolean distributionRole(RoleUserBO roleUserBO) {
+        Long roleId = roleUserBO.getRoleId();
+        Boolean execute = transactionTemplate.execute(status -> {
+            try {
+                // 查询角色是否存在
+                SysRole sysRole = sysRoleService.queryById(roleId);
+                if (Objects.isNull(sysRole)) {
+                    throw new BizException(RoleExceptionEnum.ROLE_IS_NULL);
+                }
+                // 删除已有的角色用户信息
+                sysUserRoleService.deleteById(roleId);
+                // 批量插入角色用户信息
+                return insertBatchUserRole(roleUserBO);
+            } catch (Exception e) {
+                // 事务回滚
+                status.setRollbackOnly();
+                log.info("批量插入角色用户信息异常", e);
+                throw new BizException(RoleExceptionEnum.ROLE_USER_ADD_ERROR);
+            }
+        });
+        return Boolean.TRUE.equals(execute);
+    }
+
+    /**
+     * @param: roleUserQueryBO
+     * @return PageResult<RoleUserListBO>
+     * @author Darven
+     * @date 2025/7/2 18:01
+     * @description: 查询未分配的角色列表
+     */
+    @Override
+    public PageResult<RoleUserListBO> queryUnDistributionRole(RoleUserQueryBO roleUserQueryBO) {
+        // 实体转换
+        RoleUser roleUser = RoleDomainConverter.INSTANCE.roleUserQueryBOToEntity(roleUserQueryBO);
+        // 查询
+        List<RoleUser> roleUserList=sysUserRoleService.queryUnDistributionRole(roleUser);
+        // 实体转化
+        List<RoleUserListBO> roleUserListBOS = RoleDomainConverter.INSTANCE.roleUserListToListBO(roleUserList);
+        // 查询总条数  todo 这里感觉需要优化
+        long count = sysUserRoleService.queryUnDistributionRoleCount(roleUser);
+        // 封装分页结果
+        return PageResult.<RoleUserListBO>builder()
+                .pageNum(roleUserQueryBO.getPageNum())
+                .pageSize(roleUserQueryBO.getPageSize())
+                .totalSize(count)
+                .totalPages(PageUtils.getTotalPage(count, roleUserQueryBO.getPageSize()))
+                .data(roleUserListBOS)
+                .build();
+    }
 
     /**
      * @param: roleBO
@@ -183,7 +245,10 @@ public class RoleDomainServiceImpl implements RoleDomainService {
     private boolean insertBatch(RoleBO roleBO,Long roleId){
         List<Long> menuIds = roleBO.getMenuIds();
         if(menuIds==null){
-            return false;
+            throw new BizException(RoleExceptionEnum.MENU_ID_LIST_NULL);
+        }
+        if(roleBO.getMenuIds().isEmpty()){
+            return true;
         }
         List<SysRoleMenu> sysRoleMenus = menuIds.stream().map(menuId -> {
             SysRoleMenu sysRoleMenu = new SysRoleMenu();
@@ -192,5 +257,21 @@ public class RoleDomainServiceImpl implements RoleDomainService {
             return sysRoleMenu;
         }).collect(Collectors.toList());
         return this.sysRoleMenuService.insertBatch(sysRoleMenus);
+    }
+
+    /**
+     * 批量插入用户角色关系
+     * @param roleUserBO 角色用户绑定
+     * @return  boolean
+     */
+    private boolean insertBatchUserRole(RoleUserBO roleUserBO) {
+        List<Long> userIds = roleUserBO.getUserId();
+        List<SysUserRole> sysUserRoleList = userIds.stream().map(userId -> {
+            SysUserRole sysUserRole = new SysUserRole();
+            sysUserRole.setUserId(userId);
+            sysUserRole.setRoleId(roleUserBO.getRoleId());
+            return sysUserRole;
+        }).collect(Collectors.toList());
+        return sysUserRoleService.insertBatch(sysUserRoleList)>0;
     }
 }

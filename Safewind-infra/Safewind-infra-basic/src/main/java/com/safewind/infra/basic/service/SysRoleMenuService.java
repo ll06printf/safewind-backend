@@ -19,7 +19,7 @@ public interface SysRoleMenuService {
      * @param roleId 主键
      * @return 实例对象
      */
-    SysRoleMenu queryById(Long roleId);
+    List<SysRoleMenu> queryById(Long roleId);
 
     /**
      * 新增数据
@@ -35,7 +35,7 @@ public interface SysRoleMenuService {
      * @param sysRoleMenu 实例对象
      * @return 实例对象
      */
-    SysRoleMenu update(SysRoleMenu sysRoleMenu);
+    boolean update(SysRoleMenu sysRoleMenu);
 
     /**
      * 通过主键删除数据
