@@ -1,5 +1,6 @@
 package com.safewind.infra.basic.service.impl;
 
+import com.safewind.common.annotation.EntityFill;
 import com.safewind.infra.basic.entity.SysApplyForm;
 import com.safewind.infra.basic.dao.SysApplyFormDao;
 import com.safewind.infra.basic.service.SysApplyFormService;
@@ -36,6 +37,7 @@ public class SysApplyFormServiceImpl implements SysApplyFormService {
      * @param sysApplyForm 实例对象
      * @return 实例对象
      */
+    @EntityFill
     @Override
     public SysApplyForm insert(SysApplyForm sysApplyForm) {
         this.sysApplyFormDao.insert(sysApplyForm);

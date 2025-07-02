@@ -1,5 +1,6 @@
 package com.safewind.infra.basic.service.impl;
 
+import com.safewind.common.annotation.EntityFill;
 import com.safewind.infra.basic.entity.SysReview;
 import com.safewind.infra.basic.dao.SysReviewDao;
 import com.safewind.infra.basic.service.SysReviewService;
@@ -36,6 +37,7 @@ public class SysReviewServiceImpl implements SysReviewService {
      * @param sysReview 实例对象
      * @return 实例对象
      */
+    @EntityFill
     @Override
     public SysReview insert(SysReview sysReview) {
         this.sysReviewDao.insert(sysReview);
@@ -48,6 +50,7 @@ public class SysReviewServiceImpl implements SysReviewService {
      * @param sysReview 实例对象
      * @return 实例对象
      */
+    @EntityFill
     @Override
     public SysReview update(SysReview sysReview) {
         this.sysReviewDao.update(sysReview);

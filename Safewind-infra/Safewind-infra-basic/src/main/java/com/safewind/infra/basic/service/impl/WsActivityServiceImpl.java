@@ -1,5 +1,6 @@
 package com.safewind.infra.basic.service.impl;
 
+import com.safewind.common.annotation.EntityFill;
 import com.safewind.infra.basic.entity.WsActivity;
 import com.safewind.infra.basic.dao.WsActivityDao;
 import com.safewind.infra.basic.service.WsActivityService;
@@ -35,6 +36,7 @@ public class WsActivityServiceImpl implements WsActivityService {
      * @param wsActivity 实例对象
      * @return 实例对象
      */
+    @EntityFill
     @Override
     public WsActivity insert(WsActivity wsActivity) {
         this.wsActivityDao.insert(wsActivity);
@@ -47,6 +49,7 @@ public class WsActivityServiceImpl implements WsActivityService {
      * @param wsActivity 实例对象
      * @return 实例对象
      */
+    @EntityFill
     @Override
     public WsActivity update(WsActivity wsActivity) {
         this.wsActivityDao.update(wsActivity);

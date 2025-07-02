@@ -54,6 +54,7 @@ public class SysMenuServiceImpl implements SysMenuService {
      * @param sysMenu 实例对象
      * @return 实例对象
      */
+    @EntityFill
     @Override
     public SysMenu update(SysMenu sysMenu) {
         this.sysMenuDao.update(sysMenu);

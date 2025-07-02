@@ -1,5 +1,6 @@
 package com.safewind.infra.basic.service.impl;
 
+import com.safewind.common.annotation.EntityFill;
 import com.safewind.infra.basic.entity.SysPosts;
 import com.safewind.infra.basic.dao.SysPostsDao;
 import com.safewind.infra.basic.service.SysPostsService;
@@ -36,6 +37,7 @@ public class SysPostsServiceImpl implements SysPostsService {
      * @param sysPosts 实例对象
      * @return 实例对象
      */
+    @EntityFill
     @Override
     public SysPosts insert(SysPosts sysPosts) {
         this.sysPostsDao.insert(sysPosts);
@@ -48,6 +50,7 @@ public class SysPostsServiceImpl implements SysPostsService {
      * @param sysPosts 实例对象
      * @return 实例对象
      */
+    @EntityFill
     @Override
     public SysPosts update(SysPosts sysPosts) {
         this.sysPostsDao.update(sysPosts);

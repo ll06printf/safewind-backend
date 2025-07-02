@@ -2,6 +2,8 @@ package com.safewind.infra.basic.service;
 
 import com.safewind.infra.basic.entity.SysRoleMenu;
 
+import java.util.List;
+
 
 /**
  * 角色和菜单关联表(SysRoleMenu)表服务接口
@@ -18,8 +20,6 @@ public interface SysRoleMenuService {
      * @return 实例对象
      */
     SysRoleMenu queryById(Long roleId);
-
-
 
     /**
      * 新增数据
@@ -45,4 +45,12 @@ public interface SysRoleMenuService {
      */
     boolean deleteById(Long roleId);
 
+    /**
+     * @param: list
+     * @return boolean
+     * @author Darven
+     * @date 2025/7/1 21:11
+     * @description: 批量新增数据（MyBatis原生foreach方法）
+     */
+    boolean insertBatch(List<SysRoleMenu> list);
 }

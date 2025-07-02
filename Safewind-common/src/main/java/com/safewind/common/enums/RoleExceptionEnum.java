@@ -15,15 +15,13 @@ public enum RoleExceptionEnum implements BaseExceptionInterface {
     NAME_NOT_NULL(4000,"角色名称不能为空"),
     KEY_NOT_NULL(4001,"角色标识不能为空"),
     PERM_NOT_NULL(4002,"权限标识不能为空"),
-    STATUS_NOT_NULL(4003,"角色状态不能为空"),
-    DEL_NOT_NULL(4004,"角色删除状态不能为空"),
-    CREATE_NOT_NULL(4005,"角色创建者不能为空"),
-    UPDATE_NOT_NULL(4006,"角色更新者不能为空"),
-    REMARK_NOT_NULL(4007,"角色备注不能为空"),
     ID_NOT_NULL(4008,"角色ID不能为空"),
     ROLE_IS_NULL(4009,"角色不存在"),
+    ROLE_EXIST(4010,"角色已存在"),
+    ROLE_ADD_ERROR(4011,"角色添加失败"),
+    ROLE_UPDATE_ERROR(4012,"角色更新失败"),
+    ROLE_DELETE_ERROR(4013,"角色删除失败")
     ;
-
     private final Integer code;
     private final String message;
 

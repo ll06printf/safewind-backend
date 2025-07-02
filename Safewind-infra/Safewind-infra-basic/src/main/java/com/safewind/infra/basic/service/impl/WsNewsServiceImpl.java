@@ -1,5 +1,6 @@
 package com.safewind.infra.basic.service.impl;
 
+import com.safewind.common.annotation.EntityFill;
 import com.safewind.infra.basic.entity.WsNews;
 import com.safewind.infra.basic.dao.WsNewsDao;
 import com.safewind.infra.basic.service.WsNewsService;
@@ -35,6 +36,7 @@ public class WsNewsServiceImpl implements WsNewsService {
      * @param wsNews 实例对象
      * @return 实例对象
      */
+    @EntityFill
     @Override
     public WsNews insert(WsNews wsNews) {
         this.wsNewsDao.insert(wsNews);
@@ -47,6 +49,7 @@ public class WsNewsServiceImpl implements WsNewsService {
      * @param wsNews 实例对象
      * @return 实例对象
      */
+    @EntityFill
     @Override
     public WsNews update(WsNews wsNews) {
         this.wsNewsDao.update(wsNews);

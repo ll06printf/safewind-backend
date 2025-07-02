@@ -1,5 +1,6 @@
 package com.safewind.infra.basic.service.impl;
 
+import com.safewind.common.annotation.EntityFill;
 import com.safewind.infra.basic.entity.SysDept;
 import com.safewind.infra.basic.dao.SysDeptDao;
 import com.safewind.infra.basic.service.SysDeptService;
@@ -35,6 +36,7 @@ public class SysDeptServiceImpl implements SysDeptService {
      * @param sysDept 实例对象
      * @return 实例对象
      */
+    @EntityFill
     @Override
     public SysDept insert(SysDept sysDept) {
         this.sysDeptDao.insert(sysDept);
@@ -47,6 +49,7 @@ public class SysDeptServiceImpl implements SysDeptService {
      * @param sysDept 实例对象
      * @return 实例对象
      */
+    @EntityFill
     @Override
     public SysDept update(SysDept sysDept) {
         this.sysDeptDao.update(sysDept);

@@ -1,7 +1,9 @@
 package com.safewind.infra.security.aspect;
 
 import com.safewind.common.entity.BaseEntity;
+import com.safewind.infra.security.entity.LoginUser;
 import com.safewind.infra.security.service.SecurityUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -17,6 +19,7 @@ import java.time.LocalDateTime;
  * @CreateTime: 2025-06-26  21:03
  * @Description: 基类字段插入（切面实现）
  */
+@Slf4j
 @Aspect
 @Component
 public class EntityFillAspect {
@@ -46,23 +49,41 @@ public class EntityFillAspect {
         Method method = signature.getMethod();
         String methodName = method.getName();
         Object[] args = joinPoint.getArgs();
-
+        String loginUser;
+        try {
+            loginUser = SecurityUtil.getLoginUser().getUserId().toString();
+        } catch (Exception e) {
+            loginUser = "anonymous";
+            log.warn("无法获取当前登录用户");
+        }
         for (Object o:args){
             if(o instanceof BaseEntity baseEntity){
-                // 获取登录用户
-                String loginUser = SecurityUtil.getLoginUser().getUserId().toString();
-                if(methodName.startsWith("add")||methodName.startsWith("insert")){
-                    baseEntity.setCreateBy(loginUser);
-                    baseEntity.setCreateTime(LocalDateTime.now());
-                    baseEntity.setUpdateTime(LocalDateTime.now());
-                    baseEntity.setDelFlag("0");
-                    baseEntity.setUpdateBy(loginUser);
-                }
-                else if(methodName.startsWith("update")||methodName.startsWith("edit")){
-                    baseEntity.setUpdateBy(loginUser);
-                    baseEntity.setUpdateTime(LocalDateTime.now());
+                // 如果是单体
+                fillEntity(baseEntity,loginUser,methodName);
+            } else if (o instanceof Iterable<?> iterable) {
+                // 如果是列表的话
+                for(Object o1:iterable){
+                    if(o1 instanceof BaseEntity baseEntity){
+                        fillEntity(baseEntity,loginUser,methodName);
+                    }
                 }
             }
+        }
+    }
+
+    /**
+     * 填充 BaseEntity 的公共字段
+     */
+    private void fillEntity(BaseEntity entity, String loginUser, String methodName) {
+        if (methodName.startsWith("add") || methodName.startsWith("insert")) {
+            entity.setCreateBy(loginUser);
+            entity.setCreateTime(LocalDateTime.now());
+            entity.setUpdateTime(LocalDateTime.now());
+            entity.setDelFlag("0");
+            entity.setUpdateBy(loginUser);
+        } else if (methodName.startsWith("update") || methodName.startsWith("edit")) {
+            entity.setUpdateBy(loginUser);
+            entity.setUpdateTime(LocalDateTime.now());
         }
     }
 
