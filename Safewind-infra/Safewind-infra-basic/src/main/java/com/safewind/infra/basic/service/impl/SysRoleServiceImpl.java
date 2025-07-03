@@ -5,7 +5,6 @@ import com.safewind.common.page.PageUtils;
 import com.safewind.common.annotation.EntityFill;
 import com.safewind.infra.basic.entity.SysRole;
 import com.safewind.infra.basic.dao.SysRoleDao;
-import com.safewind.infra.basic.entity.SysUserRole;
 import com.safewind.infra.basic.service.SysRoleService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
@@ -80,7 +79,7 @@ public class SysRoleServiceImpl implements SysRoleService {
     }
 
     @Override
-    public long count() {
-        return this.sysRoleDao.count(new SysRole());
+    public long count(SysRole sysRole) {
+        return this.sysRoleDao.count(sysRole);
     }
 }

@@ -2,8 +2,6 @@ package com.safewind.infra.basic.service;
 
 import com.safewind.common.page.Page;
 import com.safewind.infra.basic.entity.SysRole;
-import com.safewind.infra.basic.entity.SysUserRole;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -63,5 +61,5 @@ public interface SysRoleService {
      *
      * @return 总行数
      */
-    long count();
+    long count(SysRole sysRole);
 }

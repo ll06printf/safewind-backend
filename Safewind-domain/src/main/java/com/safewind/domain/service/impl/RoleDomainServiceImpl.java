@@ -16,6 +16,7 @@ import com.safewind.infra.basic.service.SysRoleMenuService;
 import com.safewind.infra.basic.service.SysRoleService;
 import com.safewind.infra.basic.service.SysUserRoleService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -62,7 +63,7 @@ public class RoleDomainServiceImpl implements RoleDomainService {
         page.setPageNum(roleBO.getPageNum());
         List<SysRole> sysRoleList = sysRoleService.queryRole(sysRole, page);
         // 查询总数
-        long total = sysRoleService.count();
+        long total = sysRoleService.count(sysRole);
         // 转换
         Long totalPage = PageUtils.getTotalPage(total, page.getPageSize());
         List<RoleListBO> roleListBOS = RoleDomainConverter.INSTANCE.entityToListBO(sysRoleList);
