@@ -64,7 +64,7 @@ public class SysRoleController {
 
     @ApiOperationLog(description = "删除角色列表")
     @PostMapping("/deleteRole")
-    public Result<Boolean> deleteRole(@RequestBody RoleDTO roleDTO){
+    public Result<RoleVO> deleteRole(@RequestBody RoleDTO roleDTO){
         if(roleDTO.getRoleId() == null){
             throw new BizException(RoleExceptionEnum.ID_NOT_NULL);
         }
