@@ -74,7 +74,7 @@ public interface SysMenuDao {
     /**
      * 查询权限
      * */
-    SysMenu queryByRoleId(Long roleId);
+    List<SysMenu> queryByRoleId(Long roleId);
 
     /**
      * @param: sysMenu

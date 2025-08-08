@@ -2,6 +2,7 @@ package com.safewind.infra.basic.service;
 
 import com.safewind.infra.basic.entity.RoleUser;
 import com.safewind.infra.basic.entity.SysUserRole;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -40,10 +41,10 @@ public interface SysUserRoleService {
     /**
      * 通过主键删除数据
      *
-     * @param userId 主键
+     * @param roleId 主键
      * @return 是否成功
      */
-    boolean deleteById(Long userId);
+    boolean deleteById(Long roleId);
 
     /**
      * 批量插入数据
@@ -75,4 +76,29 @@ public interface SysUserRoleService {
      * @return 数量
      */
     long queryUnDistributionRoleCount(RoleUser roleUser);
+
+    /**
+     * 查询已分配用户
+     *
+     * @param roleUser 角色用户查询条件
+     * @return 列表
+     */
+    List<RoleUser> queryDistributionRole(RoleUser roleUser);
+
+    /**
+     * 批量删除数据
+     *
+     * @param roleId
+     * @param userIds
+     * @return 批量删除数据
+     */
+    boolean deleteByRoleUserId(Long roleId,List<Long> userIds);
+
+    /**
+     * 查询已分配用户数量
+     *
+     * @param roleUser 角色用户查询条件
+     * @return 数量
+     */
+    long queryDistributionRoleCount( RoleUser roleUser);
 }

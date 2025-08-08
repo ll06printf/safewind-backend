@@ -21,4 +21,10 @@ public interface RoleDomainService {
     boolean distributionRole(RoleUserBO roleUserBO);
     // 未分配的角色列表
     PageResult<RoleUserListBO> queryUnDistributionRole(RoleUserQueryBO roleUserQueryBO);
+    // 已分配的角色列表
+    PageResult<RoleUserListBO> queryDistributionRole(RoleUserQueryBO roleUserQueryBO);
+    // 批量取消角色的用户
+    boolean batchCancelAuthorizeUser(RoleUserBO roleUserBO);
+    // 分配单个用户
+    boolean distributionSingleRole(RoleUserBO roleUserBO);
 }

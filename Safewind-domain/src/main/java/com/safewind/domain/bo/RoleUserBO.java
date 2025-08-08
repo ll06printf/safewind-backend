@@ -18,5 +18,5 @@ public class RoleUserBO {
     /**
      * 用户id列表
      * */
-    private List<Long> userId;
+    private List<Long> userIds;
 }

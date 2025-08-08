@@ -13,6 +13,10 @@ import lombok.EqualsAndHashCode;
 @Data
 public class RoleUserQueryBO extends Page {
     /**
+     * 角色id
+     * */
+    private Long roleId;
+    /**
      * 用户名
      * */
     private String userName;

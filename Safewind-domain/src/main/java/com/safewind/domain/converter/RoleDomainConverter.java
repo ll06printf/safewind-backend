@@ -1,9 +1,6 @@
 package com.safewind.domain.converter;
 
-import com.safewind.domain.bo.RoleBO;
-import com.safewind.domain.bo.RoleListBO;
-import com.safewind.domain.bo.RoleUserListBO;
-import com.safewind.domain.bo.RoleUserQueryBO;
+import com.safewind.domain.bo.*;
 import com.safewind.infra.basic.entity.RoleUser;
 import com.safewind.infra.basic.entity.SysRole;
 import org.mapstruct.Mapper;

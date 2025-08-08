@@ -23,8 +23,9 @@ public enum RoleExceptionEnum implements BaseExceptionInterface {
     ROLE_DELETE_ERROR(4013,"角色删除失败"),
     ROLE_DISTRIBUTION_ERROR(4014,"角色分配失败"),
     ROLE_USER_ADD_ERROR(4015,"用户分配添加失败"),
-    MENU_ID_LIST_NULL(4016,"menuIds不存在")
-    ;
+    MENU_ID_LIST_NULL(4016,"menuIds不存在"),
+    USER_ID_LIST_ERROR(4017, "参数错误"),
+    USER_ROLE_EXIST(4018, "用户已经分配");
     private final Integer code;
     private final String message;
 

@@ -80,7 +80,7 @@ public class SysMenuServiceImpl implements SysMenuService {
      * @description: 通过角色查询菜单
      */
     @Override
-    public SysMenu queryByRole(Long roleId) {
+    public List<SysMenu> queryByRole(Long roleId) {
         return this.sysMenuDao.queryByRoleId(roleId);
     }
 

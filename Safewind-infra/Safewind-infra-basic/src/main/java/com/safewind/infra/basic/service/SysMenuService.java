@@ -54,7 +54,7 @@ public interface SysMenuService {
      * @param roleId 角色ID
      * @return 权限信息
      * */
-    SysMenu queryByRole(Long roleId);
+    List<SysMenu> queryByRole(Long roleId);
 
     /**
      * 分页查询

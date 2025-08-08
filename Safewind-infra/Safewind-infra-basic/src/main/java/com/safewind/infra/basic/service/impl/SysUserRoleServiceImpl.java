@@ -63,12 +63,12 @@ public class SysUserRoleServiceImpl implements SysUserRoleService {
     /**
      * 通过主键删除数据
      *
-     * @param userId 主键
+     * @param roleId 主键
      * @return 是否成功
      */
     @Override
-    public boolean deleteById(Long userId) {
-        return this.sysUserRoleDao.deleteById(userId) > 0;
+    public boolean deleteById(Long roleId) {
+        return this.sysUserRoleDao.deleteById(roleId) > 0;
     }
 
     /**
@@ -98,5 +98,21 @@ public class SysUserRoleServiceImpl implements SysUserRoleService {
     @Override
     public long queryUnDistributionRoleCount(RoleUser roleUser) {
         return this.sysUserRoleDao.queryUnDistributionRoleCount(roleUser);
+    }
+
+    @Override
+    public List<RoleUser> queryDistributionRole(RoleUser roleUser) {
+        roleUser.setPageNum(PageUtils.getOffset(roleUser.getPageNum(), roleUser.getPageSize()));
+        return this.sysUserRoleDao.queryDistributionRole(roleUser);
+    }
+
+    @Override
+    public boolean deleteByRoleUserId(Long roleId, List<Long> userIds) {
+        return this.sysUserRoleDao.deleteByIdList(roleId,userIds)==userIds.size();
+    }
+
+    @Override
+    public long queryDistributionRoleCount(RoleUser roleUser) {
+        return this.sysUserRoleDao.queryDistributionRoleCount(roleUser);
     }
 }

@@ -15,6 +15,9 @@ import com.safewind.infra.security.service.SecurityUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.w3c.dom.stylesheets.LinkStyle;
+
+import java.util.List;
 
 /**
  * @Author: Darven
@@ -53,7 +56,7 @@ public class UserDomainServiceImpl implements UserDomainService {
         UserInfoBO userInfoBO = UserInfoBO.builder().build();
         BeanUtils.copyProperties(userInfo, userInfoBO);
         // 权限信息
-        SysMenu sysMenu = sysMenuService.queryByRole(user.getRole().getRoleId());
+        List<SysMenu> sysMenuList = sysMenuService.queryByRole(user.getRole().getRoleId());
 
         return UserBO.builder()
                 .userId(loginUser.getUserId())

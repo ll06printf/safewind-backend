@@ -87,7 +87,7 @@ public class SysRoleController {
         return b?Result.success():Result.fail("修改失败");
     }
 
-    @ApiOperationLog(description = "分配用户")
+    @ApiOperationLog(description = "批量分配用户")
     @PostMapping("/distributionRole")
     public Result<Boolean> distributionRole(@RequestBody RoleUserDTO roleUserDTO) {
         // 校验角色id
@@ -96,6 +96,18 @@ public class SysRoleController {
         RoleUserBO roleUserBO = RoleConverter.INSTANCE.roleUserDTOToBO(roleUserDTO);
         // 返回结果
         return roleDomainService.distributionRole(roleUserBO)?Result.success() : Result.fail("分配用户失败");
+    }
+
+    @ApiOperationLog(description = "分配单个用户")
+    @PostMapping("/distributionSingleRole")
+    public Result<Boolean> distributionSingleRole(@RequestBody RoleUserDTO roleUserDTO) {
+        // todo：统一使用一个传参，这里是单个，所以只取第一个
+        // 校验角色id
+        checkRoleUser(roleUserDTO);
+        // 转化角色用户
+        RoleUserBO roleUserBO = RoleConverter.INSTANCE.roleUserDTOToBO(roleUserDTO);
+        // 返回结果
+        return roleDomainService.distributionSingleRole(roleUserBO)?Result.success() : Result.fail("分配用户失败");
     }
 
     @ApiOperationLog(description = "未分配的角色列表")
@@ -113,20 +125,25 @@ public class SysRoleController {
 
     @ApiOperationLog(description = "已分配的角色列表")
     @PostMapping("/queryDistributionRole")
-    public Result<PageResult<RoleDTO>> queryDistributionRole(@RequestBody RoleUserQueryDTO roleUserQueryDTO) {
-        return null;
-    }
-
-    @ApiOperationLog(description = "取消授权用户")
-    @PostMapping("/cancelAuthorizeUser")
-    public Result<Boolean> cancelAuthorizeUser(@RequestBody RoleDTO roleDTO) {
-        return null;
+    public Result<PageResult<RoleUserVO>> queryDistributionRole(@RequestBody RoleUserQueryDTO roleUserQueryDTO) {
+        // 实体转化
+        RoleUserQueryBO roleUserQueryBO = RoleConverter.INSTANCE.roleUserQueryDTOToBO(roleUserQueryDTO);
+        // 查询
+        PageResult<RoleUserListBO> roleListBO = roleDomainService.queryDistributionRole(roleUserQueryBO);
+        // 实体转化
+        PageResult<RoleUserVO> roleUserVOPageResult = RoleConverter.INSTANCE.pageBOToPageVO(roleListBO);
+        // 返回
+        return Result.success(roleUserVOPageResult);
     }
 
     @ApiOperationLog(description = "批量取消授权用户")
     @PostMapping("/batchCancelAuthorizeUser")
-    public Result<Boolean> batchCancelAuthorizeUser(@RequestBody RoleDTO roleDTO) {
-        return null;
+    public Result<Boolean> batchCancelAuthorizeUser(@RequestBody RoleUserDTO roleUserDTO) {
+        // 参数校验
+        checkRoleUser(roleUserDTO);
+        // 参数转化
+        RoleUserBO roleUserBO = RoleConverter.INSTANCE.roleUserDTOToBO(roleUserDTO);
+        return roleDomainService.batchCancelAuthorizeUser(roleUserBO)?Result.success() : Result.fail("批量取消授权用户失败");
     }
 
     /**

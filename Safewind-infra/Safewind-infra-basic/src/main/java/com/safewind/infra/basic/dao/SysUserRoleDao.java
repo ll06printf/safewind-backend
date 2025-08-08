@@ -68,10 +68,10 @@ public interface SysUserRoleDao {
     /**
      * 通过主键删除数据
      *
-     * @param userId 主键
+     * @param roleId 主键
      * @return 影响行数
      */
-    int deleteById(Long userId);
+    int deleteById(Long roleId);
 
     /**
      * 查询未分配角色的用户
@@ -87,6 +87,30 @@ public interface SysUserRoleDao {
      * @param roleUser 角色用户
      * @return 数量
      */
-    long queryUnDistributionRoleCount(RoleUser roleUser);
+    long queryUnDistributionRoleCount(@Param("roleUser")RoleUser roleUser);
+
+    /**
+     * 查询已分配角色的用户
+     *
+     * @param roleUser 角色用户
+     * @return 列表
+     */
+    List<RoleUser> queryDistributionRole(@Param("roleUser") RoleUser roleUser);
+
+    /**
+     * 批量删除
+     *
+     * @param roleId 角色id userId 用户列表
+     * @return 列表
+     */
+    int deleteByIdList(@Param("roleId") Long roleId, @Param("userIds") List<Long> userIds);
+
+    /**
+     * 查询已分配角色的用户数量
+     *
+     * @param roleUser 角色用户
+     * @return 数量
+     */
+    long queryDistributionRoleCount(@Param("roleUser")RoleUser roleUser);
 }
 
