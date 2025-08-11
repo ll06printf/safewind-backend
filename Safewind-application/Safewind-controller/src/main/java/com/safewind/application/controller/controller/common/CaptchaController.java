@@ -1,6 +1,6 @@
 package com.safewind.application.controller.controller.common;
 
-import cn.hutool.core.codec.Base64;
+
 import com.safewind.application.controller.vo.CaptchaVO;
 import com.safewind.common.enums.ResultCodeEnum;
 import com.safewind.common.exception.BizException;
@@ -12,6 +12,7 @@ import com.safewind.infra.security.captcha.CaptchaResult;
 import com.safewind.infra.security.captcha.CaptchaUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Base64Utils;
 import org.springframework.util.FastByteArrayOutputStream;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -63,7 +64,7 @@ public class CaptchaController {
         }
         return Result.success(CaptchaVO.builder()
                 .uuid(uuid)
-                .img(Base64.encode(os.toByteArray()))
+                .img(Base64Utils.encodeToString(os.toByteArray()))
                 .build());
     }
 }
