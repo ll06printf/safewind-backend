@@ -25,7 +25,10 @@ public enum RoleExceptionEnum implements BaseExceptionInterface {
     ROLE_USER_ADD_ERROR(4015,"用户分配添加失败"),
     MENU_ID_LIST_NULL(4016,"menuIds不存在"),
     USER_ID_LIST_ERROR(4017, "参数错误"),
-    USER_ROLE_EXIST(4018, "用户已经分配");
+    USER_ROLE_EXIST(4018, "用户已经分配"),
+    ROLE_HAS_MENU(4019, "角色已经绑定菜单"),
+    ROLE_HAS_USER(4020, "角色已经绑定用户"),
+    MENU_ID_LIST_ERROR(4021, "菜单不存在，请确保菜单ID存在");
     private final Integer code;
     private final String message;
 

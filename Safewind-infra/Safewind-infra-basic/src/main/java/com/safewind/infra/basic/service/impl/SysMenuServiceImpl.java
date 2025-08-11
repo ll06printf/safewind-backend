@@ -5,11 +5,17 @@ import com.safewind.common.page.Page;
 import com.safewind.common.page.PageUtils;
 import com.safewind.infra.basic.entity.SysMenu;
 import com.safewind.infra.basic.dao.SysMenuDao;
+import com.safewind.infra.basic.entity.SysRole;
+import com.safewind.infra.basic.entity.SysUser;
 import com.safewind.infra.basic.service.SysMenuService;
 import jakarta.annotation.Resource;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -120,5 +126,68 @@ public class SysMenuServiceImpl implements SysMenuService {
     @Override
     public List<SysMenu> query(SysMenu sysMenu) {
         return this.sysMenuDao.query(sysMenu);
+    }
+
+    /**
+     * @param: user
+     * @return Set<String>
+     * @author Darven
+     * @date 2025/6/27 18:05
+     * @description: 获取用户权限
+     */
+    @Override
+    public Set<String> getMenuPermissions(SysUser user) {
+        Set<String> permissions = new HashSet<>();
+
+        // 超级管理员拥有所有权限
+        if (user.isAdmin()) {
+            permissions.add("*:*:*");
+            return permissions;
+        }
+
+        // 修改：支持多角色
+        if (user.getRoles() != null && !user.getRoles().isEmpty()) {
+            for (SysRole role : user.getRoles()) {
+                if (role != null && "0".equals(role.getStatus())) {
+                    List<SysMenu> menus = this.queryByRole(role.getRoleId());
+                    for (SysMenu menu : menus) {
+                        if (menu.getPerms() != null && !menu.getPerms().trim().isEmpty()) {
+                            permissions.add(menu.getPerms().trim());
+                        }
+                    }
+                }
+            }
+        }
+
+        return permissions;
+    }
+
+    @Override
+    public Set<String> selectMenuPermsByRoleId(Long roleId) {
+        List<String> perms = this.sysMenuDao.selectMenuPermsByRoleId(roleId);
+        Set<String> permsSet = new HashSet<>();
+        for (String perm : perms)
+        {
+            if (StringUtils.isNotEmpty(perm))
+            {
+                permsSet.addAll(Arrays.asList(perm.trim().split(",")));
+            }
+        }
+        return permsSet;
+    }
+
+    @Override
+    public List<SysMenu> selectMenuTreeAll() {
+        return this.sysMenuDao.selectMenuTreeAll();
+    }
+
+    @Override
+    public List<SysMenu> selectMenuTreeByUserId(Long userId) {
+        return this.sysMenuDao.selectMenuTreeByUserId(userId);
+    }
+
+    @Override
+    public List<SysMenu> queryByIds(List<Long> menuIds) {
+        return this.sysMenuDao.queryByIds(menuIds);
     }
 }

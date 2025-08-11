@@ -63,4 +63,14 @@ public class SecurityUtil {
         }
     }
 
+    /**
+    * @Description 是否为超级管理员
+    * @param userId 用户id
+    * @return java.lang.Boolean
+    * @author Darven
+    * @Date 2025/6/26
+    */
+    public static boolean isAdmin(Long userId) {
+        return userId != null && 1L == userId;
+    }
 }

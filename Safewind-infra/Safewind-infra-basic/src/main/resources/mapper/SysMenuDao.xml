@@ -318,7 +318,7 @@
         where menu_id = #{menuId}
     </delete>
 
-    <select id="queryByRoleId" resultType="com.safewind.infra.basic.entity.SysMenu">
+    <select id="queryByRoleId" resultMap="SysMenuMap">
         select m.menu_id,
                menu_name,
                parent_id,
@@ -356,6 +356,80 @@
         </where>
     </select>
 
+    <select id="selectMenuPermsByRoleId" resultType="java.lang.String">
+        select distinct m.perms
+        from sys_menu m
+                 left join sys_role_menu rm on m.menu_id = rm.menu_id
+        where m.status = '0'
+          and rm.role_id = #{roleId}
+    </select>
 
+    <select id="selectMenuTreeByUserId" resultMap="SysMenuMap">
+        select distinct m.menu_id,
+                        m.menu_name,
+                        m.parent_id,
+                        m.order_num,
+                        m.path,
+                        m.component,
+                        m.query,
+                        m.route_name,
+                        m.is_frame,
+                        m.is_cache,
+                        m.menu_type,
+                        m.visible,
+                        m.status,
+                        ifnull(m.perms, '') as perms,
+                        m.icon,
+                        m.create_by,
+                        m.create_time,
+                        m.update_by,
+                        m.update_time,
+                        m.remark
+        from sys_menu m
+                 left join sys_role_menu rm on m.menu_id = rm.menu_id
+                 left join sys_user_role ur on rm.role_id = ur.role_id
+                 left join sys_role ro on ur.role_id = ro.role_id
+                 left join sys_user u on ur.user_id = u.id
+        where u.id = #{userId}
+          and m.menu_type in ('M', 'C')
+          and m.status = 0
+          and ro.status = 0
+        order by m.parent_id, m.order_num
+    </select>
+
+    <select id="selectMenuTreeAll" resultMap="SysMenuMap">
+        select distinct m.menu_id,
+                        m.parent_id,
+                        m.menu_name,
+                        m.path,
+                        m.component,
+                        m.query,
+                        m.route_name,
+                        m.visible,
+                        m.status,
+                        ifnull(m.perms,'') as perms,
+                        m.is_frame,
+                        m.is_cache,
+                        m.menu_type,
+                        m.icon,
+                        m.order_num,
+                        m.create_time
+        from sys_menu m
+        where m.menu_type in ('M', 'C')
+          and m.status = 0
+        order by m.parent_id, m.order_num
+    </select>
+
+    <select id="queryByIds" parameterType="list" resultType="com.safewind.infra.basic.entity.SysMenu">
+        select * from sys_menu
+        <where>
+            <if test="list != null and list.size() > 0">
+                menu_id in
+                <foreach collection="list" item="id" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+    </select>
 </mapper>
 

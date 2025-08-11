@@ -3,6 +3,9 @@ package com.safewind.domain.bo;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
+import java.util.Set;
+
 
 /**
  * @Author: Darven
@@ -35,10 +38,25 @@ public class UserBO {
     /**
      * 用户角色
      * */
-    private UserRoleBO role;
+    private List<UserRoleBO> roles;
+
+    /**
+     * 角色键列表
+     */
+    private Set<String> roleKeys;
 
     /**
      * 部门
      * */
     private UserDeptBO dept;
+
+    /**
+     * 权限
+     * */
+    private Set<String> permissions;
+
+    /**
+     * 是否是管理员
+     * */
+    private Boolean isAdmin;
 }

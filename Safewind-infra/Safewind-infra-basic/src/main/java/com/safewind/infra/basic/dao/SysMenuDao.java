@@ -95,5 +95,41 @@ public interface SysMenuDao {
      * @description: 查询所有菜单列表
      */
     List<SysMenu> query(SysMenu sysMenu);
+
+    /**
+     * @param: roleId
+     * @return List<String>
+     * @author Darven
+     * @date 2025/6/29 20:24
+     * @description: 根据角色ID查询权限
+     */
+    List<String> selectMenuPermsByRoleId(Long roleId);
+
+    /**
+     * @param: userId
+     * @return List<SysMenu>
+     * @author Darven
+     * @date 2025/6/29 20:24
+     * @description: 根据用户ID查询权限
+     */
+    List<SysMenu> selectMenuTreeByUserId(Long userId);
+
+    /**
+     * @param
+     * @return List<SysMenu>
+     * @author Darven
+     * @date 2025/6/29 20:24
+     * @description: 查询所有菜单
+     */
+    List<SysMenu> selectMenuTreeAll();
+
+    /**
+     * @param: menuIds
+     * @return List<SysMenu>
+     * @author Darven
+     * @date 2025/6/29 20:24
+     * @description: 根据ID查询菜单
+     */
+    List<SysMenu> queryByIds(List<Long> menuIds);
 }
 

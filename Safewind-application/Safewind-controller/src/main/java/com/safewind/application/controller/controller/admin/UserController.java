@@ -1,16 +1,25 @@
 package com.safewind.application.controller.controller.admin;
 
+import com.safewind.application.controller.converter.MenuConverter;
+import com.safewind.application.controller.converter.UserConverter;
 import com.safewind.application.controller.dto.UserLoginDTO;
+import com.safewind.application.controller.vo.MenuVO;
 import com.safewind.application.controller.vo.UserLoginVO;
 import com.safewind.application.controller.vo.UserVO;
 import com.safewind.common.annotation.ApiOperationLog;
 import com.safewind.common.utils.Result;
+import com.safewind.domain.bo.MenuBO;
+import com.safewind.domain.bo.MenuListBO;
 import com.safewind.domain.bo.UserBO;
+import com.safewind.domain.service.MenuDomainService;
 import com.safewind.domain.service.UserDomainService;
+import com.safewind.infra.security.service.SecurityUtil;
 import com.safewind.infra.security.service.SysLoginService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @Author: Darven
@@ -27,6 +36,9 @@ public class UserController {
 
     @Autowired
     private UserDomainService userDomainService;
+
+    @Autowired
+    private MenuDomainService menuDomainService;
 
     @ApiOperationLog(description = "登录接口")
     @PostMapping("/login")
@@ -60,34 +72,18 @@ public class UserController {
         UserBO userBO = userDomainService.getUserInfo();
         log.info("userBO={}", userBO);
         // 抽成方法存放，实体转化
-        UserVO userVO = getUserVO(userBO);
+        UserVO userVO = UserConverter.INSTANCE.userBOToVO(userBO);
         log.info("==> getUserInfo获得信息={}",userVO);
         return Result.success(userVO);
     }
 
-    /**
-     * UserBO->UserVO
-     *
-     * @param userBO 领域实体类
-     * @return 返回实体类
-     * */
-    private UserVO getUserVO(UserBO userBO) {
-        UserVO userVO = UserVO.builder()
-                .userId(userBO.getUserId())
-                .studentId(userBO.getStudentId())
-                .email(userBO.getEmail())
-                .nickname(userBO.getUserInfo().getNickname())
-                .avatar(userBO.getUserInfo().getAvatar())
-                .grade(userBO.getUserInfo().getGrade())
-                .speciality(userBO.getUserInfo().getSpeciality())
-                .faculty(userBO.getUserInfo().getFaculty())
-                .userInfoName(userBO.getUserInfo().getName())
-                .sex(userBO.getUserInfo().getSex())
-                .className(userBO.getUserInfo().getClassName())
-                .roleName(userBO.getRole().getRoleName())
-                .roleKey(userBO.getRole().getRoleKey())
-                .deptName(userBO.getDept().getName())
-                .build();
-        return userVO;
+    @ApiOperationLog(description = "获取用户路由")
+    @GetMapping("/getRoutes")
+    public Result<List<MenuVO>> getRoutes(){
+        Long userId = SecurityUtil.getUserId();
+        List<MenuListBO> menuBOList= userDomainService.getRoutes(userId);
+        // 参数转化
+        List<MenuVO> menuVOS = MenuConverter.INSTANCE.menuBOListToMenuVOList(menuBOList);
+        return Result.success(menuVOS);
     }
 }

@@ -12,6 +12,10 @@ import lombok.Data;
 @Builder
 public class UserDeptBO {
     /**
+     * 部门id
+     * */
+    private Long deptId;
+    /**
      * 部门名字
      */
     private String name;

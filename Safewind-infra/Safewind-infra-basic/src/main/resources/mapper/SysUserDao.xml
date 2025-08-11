@@ -15,6 +15,24 @@
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
+    <!-- 角色映射定义 -->
+    <resultMap id="RoleResult" type="com.safewind.infra.basic.entity.SysRole">
+        <id property="roleId" column="role_id"/>
+        <result property="roleName" column="role_name"/>
+        <result property="roleKey" column="role_key"/>
+        <result property="roleSort" column="role_sort"/>
+        <result property="dataScope" column="data_scope"/>
+        <result property="menuCheckStrictly" column="menu_check_strictly"/>
+        <result property="deptCheckStrictly" column="dept_check_strictly"/>
+        <result property="status" column="status"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
     <resultMap type="com.safewind.infra.basic.entity.SysUser" id="SysUserWithInfoMap" extends="SysUserMap">
         <association property="userInfo" javaType="com.safewind.infra.basic.entity.SysUserInfo">
             <id property="id" column="user_info_id"/>
@@ -29,21 +47,15 @@
             <result property="className" column="class_name"/>
         </association>
 
-        <!-- SysRole -->
-        <association property="role" javaType="com.safewind.infra.basic.entity.SysRole">
-            <id property="roleId" column="role_id"/>
-            <result property="roleName" column="role_name"/>
-            <result property="roleKey" column="role_key"/>
-            <result property="roleSort" column="role_sort"/>
-            <result property="dataScope" column="data_scope"/>
-        </association>
-
-        <!--SysDept-->
+        <!-- SysDept -->
         <association property="dept" javaType="com.safewind.infra.basic.entity.SysDept">
             <id property="id" column="dept_d_id"/>
             <result property="name" column="dept_name"/>
         </association>
+
+        <collection property="roles" javaType="java.util.List" resultMap="RoleResult" />
     </resultMap>
+
 
     <sql id="queryUserVo">
         SELECT u.id,
@@ -73,6 +85,15 @@
                r.role_key,
                r.role_sort,
                r.data_scope,
+               r.menu_check_strictly,
+               r.dept_check_strictly,
+               r.status,
+               r.del_flag,
+               r.create_by,
+               r.create_time,
+               r.update_by,
+               r.update_time,
+               r.remark,
 
                d.id   AS dept_d_id,
                d.name AS dept_name

@@ -7,9 +7,10 @@ import com.safewind.infra.basic.entity.SysRole;
 import com.safewind.infra.basic.dao.SysRoleDao;
 import com.safewind.infra.basic.service.SysRoleService;
 import jakarta.annotation.Resource;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * 角色信息表(SysRole)表服务实现类
@@ -81,5 +82,23 @@ public class SysRoleServiceImpl implements SysRoleService {
     @Override
     public long count(SysRole sysRole) {
         return this.sysRoleDao.count(sysRole);
+    }
+
+    /**
+     * 根据用户ID查询权限
+     *
+     * @param userId 用户ID
+     * @return 权限列表
+     */
+    @Override
+    public Set<String> selectRolePermissionByUserId(Long userId) {
+        List<SysRole> perms = sysRoleDao.selectRolePermissionByUserId(userId);
+        Set<String> permsSet = new HashSet<>();
+        for (SysRole perm : perms) {
+            if (Objects.nonNull(perm) && StringUtils.isNotBlank(perm.getRoleKey())) {
+                permsSet.add(perm.getRoleKey().trim());
+            }
+        }
+        return permsSet;
     }
 }

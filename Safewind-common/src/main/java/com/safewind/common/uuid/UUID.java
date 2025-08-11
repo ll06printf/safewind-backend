@@ -1,7 +1,5 @@
 package com.safewind.common.uuid;
 
-import cn.hutool.core.exceptions.UtilException;
-
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -467,7 +465,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID>
         }
         catch (NoSuchAlgorithmException e)
         {
-            throw new UtilException(e);
+            throw new RuntimeException("无法初始化 SecureRandom",e);
         }
     }
 

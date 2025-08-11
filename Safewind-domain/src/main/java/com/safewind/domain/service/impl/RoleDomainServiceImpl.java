@@ -9,10 +9,8 @@ import com.safewind.common.utils.Result;
 import com.safewind.domain.bo.*;
 import com.safewind.domain.converter.RoleDomainConverter;
 import com.safewind.domain.service.RoleDomainService;
-import com.safewind.infra.basic.entity.RoleUser;
-import com.safewind.infra.basic.entity.SysRole;
-import com.safewind.infra.basic.entity.SysRoleMenu;
-import com.safewind.infra.basic.entity.SysUserRole;
+import com.safewind.infra.basic.entity.*;
+import com.safewind.infra.basic.service.SysMenuService;
 import com.safewind.infra.basic.service.SysRoleMenuService;
 import com.safewind.infra.basic.service.SysRoleService;
 import com.safewind.infra.basic.service.SysUserRoleService;
@@ -23,6 +21,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -45,6 +44,9 @@ public class RoleDomainServiceImpl implements RoleDomainService {
 
     @Autowired
     private SysUserRoleService sysUserRoleService;
+
+    @Autowired
+    private SysMenuService sysMenuService;
 
     /**
      * @return PageResult<RoleListBO>
@@ -98,7 +100,7 @@ public class RoleDomainServiceImpl implements RoleDomainService {
                 SysRole insert = sysRoleService.insert(sysRole);
                 // 添加角色菜单关系
                 if(Objects.nonNull(insert)){
-                    return insertBatch(roleBO, sysRole.getRoleId());
+                    return insertMenuBatch(roleBO, sysRole.getRoleId());
                 }
                 return false;
             }catch(Exception e){
@@ -136,7 +138,7 @@ public class RoleDomainServiceImpl implements RoleDomainService {
                     // 删除角色权限
                     boolean delete = sysRoleMenuService.deleteById(roleBO.getRoleId());
                 }
-                return insertBatch(roleBO, roleBO.getRoleId());
+                return insertMenuBatch(roleBO, roleBO.getRoleId());
             } catch (Exception e) {
                 status.setRollbackOnly();
                 log.error("修改角色异常: {}", e.getMessage(), e);
@@ -161,16 +163,26 @@ public class RoleDomainServiceImpl implements RoleDomainService {
         // 删除角色绑定的菜单权限
         Boolean result = transactionTemplate.execute(status -> {
             try {
-                // 删除角色
-                boolean b = sysRoleService.deleteById(roleId);
+                // 如果有菜单绑定，不给删除
                 List<SysRoleMenu> sysRoleMenus = sysRoleMenuService.queryById(roleId);
                 if (!sysRoleMenus.isEmpty()) {
-                    return sysRoleMenuService.deleteById(roleId);
+                    throw new BizException(RoleExceptionEnum.ROLE_HAS_MENU);
                 }
+                // 如果有用户绑定，不给删除
+                List<SysUserRole> sysUserRoleList= sysUserRoleService.queryByRoleId(roleId);
+                if(!sysUserRoleList.isEmpty()){
+                    throw new BizException(RoleExceptionEnum.ROLE_HAS_MENU);
+                }
+                // 删除角色
+                boolean b = sysRoleService.deleteById(roleId);
                 return true;
             } catch (Exception e) {
                 status.setRollbackOnly();
                 log.error("删除角色失败", e);
+                // 显示内部自定义错误，避免被覆盖
+                if(e instanceof BizException){
+                    throw (BizException) e;
+                }
                 throw new BizException(RoleExceptionEnum.ROLE_DELETE_ERROR);
             }
         });
@@ -308,7 +320,7 @@ public class RoleDomainServiceImpl implements RoleDomainService {
      * @date 2025/7/1 21:47
      * @description: 批量插入角色菜单关系
      */
-    private boolean insertBatch(RoleBO roleBO,Long roleId){
+    private boolean insertMenuBatch(RoleBO roleBO,Long roleId){
         List<Long> menuIds = roleBO.getMenuIds();
         // 菜单ID为空
         if(menuIds==null){
@@ -366,6 +378,151 @@ public class RoleDomainServiceImpl implements RoleDomainService {
         if(!roleUserList.isEmpty()&&roleUserList.size()!=1){
             throw new BizException(RoleExceptionEnum.USER_ROLE_EXIST);
         }
+    }
+
+    /**
+     * 查询角色已分配的菜单权限
+     */
+    @Override
+    public List<RoleMenuListBO> queryRoleMenus(Long roleId) {
+        // 查询角色是否存在
+        SysRole sysRole = sysRoleService.queryById(roleId);
+        if (Objects.isNull(sysRole)) {
+            throw new BizException(RoleExceptionEnum.ROLE_IS_NULL);
+        }
+
+        // 查询角色已分配的菜单
+        List<SysMenu> menuList = sysMenuService.queryByRole(roleId);
+
+        // 转换为BO
+        return menuList.stream()
+                .map(menu -> {
+                    RoleMenuListBO bo = new RoleMenuListBO();
+                    bo.setMenuId(menu.getMenuId());
+                    bo.setMenuName(menu.getMenuName());
+                    bo.setParentId(menu.getParentId());
+                    bo.setOrderNum(menu.getOrderNum());
+                    bo.setPath(menu.getPath());
+                    bo.setComponent(menu.getComponent());
+                    bo.setQuery(menu.getQuery());
+                    bo.setRouteName(menu.getRouteName());
+                    bo.setIsFrame(menu.getIsFrame());
+                    bo.setIsCache(menu.getIsCache());
+                    bo.setMenuType(menu.getMenuType());
+                    bo.setVisible(menu.getVisible());
+                    bo.setStatus(menu.getStatus());
+                    bo.setPerms(menu.getPerms());
+                    bo.setIcon(menu.getIcon());
+                    bo.setIsAssigned(true);
+                    return bo;
+                })
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 分配菜单权限给角色
+     */
+    /**
+     * 分配菜单权限给角色
+     */
+    @Override
+    public boolean assignMenusToRole(RoleMenuBO roleMenuBO) {
+        Long roleId = roleMenuBO.getRoleId();
+        List<Long> menuIds = roleMenuBO.getMenuIds();
+
+        // 严格参数验证
+        if (roleId == null) {
+            throw new BizException(RoleExceptionEnum.ID_NOT_NULL);
+        }
+
+        // 不允许 menuIds 为 null
+        if (menuIds == null) {
+            throw new BizException(RoleExceptionEnum.MENU_ID_LIST_NULL);
+        }
+
+        // 查询角色是否存在
+        SysRole sysRole = sysRoleService.queryById(roleId);
+        if (Objects.isNull(sysRole)) {
+            throw new BizException(RoleExceptionEnum.ROLE_IS_NULL);
+        }
+
+        // 验证菜单是否存在（即使列表为空也要验证）
+        if (!menuIds.isEmpty()) {
+            List<SysMenu> menuList = sysMenuService.queryByIds(menuIds);
+            if (menuList.size() != menuIds.size()) {
+                throw new BizException(RoleExceptionEnum.MENU_ID_LIST_ERROR);
+            }
+        }
+
+        return Boolean.TRUE.equals(transactionTemplate.execute(status -> {
+            try {
+                // 删除角色原有的菜单权限
+                sysRoleMenuService.deleteById(roleId);
+
+                // 如果菜单ID列表为空，表示清空该角色的所有菜单权限
+                if (menuIds.isEmpty()) {
+                    log.info("清空角色 {} 的所有菜单权限", roleId);
+                    return true;
+                }
+
+                // 批量插入新的角色菜单关系
+                List<SysRoleMenu> roleMenuList = menuIds.stream()
+                        .map(menuId -> {
+                            SysRoleMenu roleMenu = new SysRoleMenu();
+                            roleMenu.setRoleId(roleId);
+                            roleMenu.setMenuId(menuId);
+                            return roleMenu;
+                        })
+                        .collect(Collectors.toList());
+
+                boolean result = sysRoleMenuService.insertBatch(roleMenuList);
+                log.info("角色 {} 分配菜单权限成功，菜单数量：{}", roleId, menuIds.size());
+                return result;
+            } catch (Exception e) {
+                status.setRollbackOnly();
+                log.error("分配菜单权限失败，角色ID：{}", roleId, e);
+                throw new BizException(RoleExceptionEnum.ROLE_DISTRIBUTION_ERROR);
+            }
+        }));
+    }
+
+    /**
+     * 查询所有菜单（包含是否已分配给角色的标识）
+     */
+    @Override
+    public List<RoleMenuListBO> queryAllMenusWithRoleStatus(Long roleId) {
+        // 查询所有菜单
+        List<SysMenu> allMenus = sysMenuService.query(new SysMenu());
+
+        // 查询角色已分配的菜单ID
+        List<SysRoleMenu> assignedMenus = sysRoleMenuService.queryById(roleId);
+        Set<Long> assignedMenuIds = assignedMenus.stream()
+                .map(SysRoleMenu::getMenuId)
+                .collect(Collectors.toSet());
+
+        // 转换为BO并标记是否已分配
+        return allMenus.stream()
+                .map(menu -> {
+                    RoleMenuListBO bo = new RoleMenuListBO();
+                    bo.setMenuId(menu.getMenuId());
+                    bo.setMenuName(menu.getMenuName());
+                    bo.setParentId(menu.getParentId());
+                    bo.setOrderNum(menu.getOrderNum());
+                    bo.setPath(menu.getPath());
+                    bo.setComponent(menu.getComponent());
+                    bo.setQuery(menu.getQuery());
+                    bo.setRouteName(menu.getRouteName());
+                    bo.setIsFrame(menu.getIsFrame());
+                    bo.setIsCache(menu.getIsCache());
+                    bo.setMenuType(menu.getMenuType());
+                    bo.setVisible(menu.getVisible());
+                    bo.setStatus(menu.getStatus());
+                    bo.setPerms(menu.getPerms());
+                    bo.setIcon(menu.getIcon());
+                    bo.setIsAssigned(assignedMenuIds.contains(menu.getMenuId()));
+                    return bo;
+                })
+                .collect(Collectors.toList());
     }
 
 }

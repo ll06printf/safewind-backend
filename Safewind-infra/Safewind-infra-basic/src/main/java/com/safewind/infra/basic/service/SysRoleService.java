@@ -3,7 +3,9 @@ package com.safewind.infra.basic.service;
 import com.safewind.common.page.Page;
 import com.safewind.infra.basic.entity.SysRole;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -62,4 +64,12 @@ public interface SysRoleService {
      * @return 总行数
      */
     long count(SysRole sysRole);
+
+    /**
+     * 通过用户ID查询角色权限
+     *
+     * @param userId 用户ID
+     * @return 权限列表
+     */
+    Set<String> selectRolePermissionByUserId(Long userId);
 }

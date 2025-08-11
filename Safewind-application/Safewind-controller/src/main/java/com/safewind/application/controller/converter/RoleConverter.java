@@ -1,9 +1,7 @@
 package com.safewind.application.controller.converter;
 
-import com.safewind.application.controller.dto.RoleDTO;
-import com.safewind.application.controller.dto.RoleQueryDTO;
-import com.safewind.application.controller.dto.RoleUserDTO;
-import com.safewind.application.controller.dto.RoleUserQueryDTO;
+import com.safewind.application.controller.dto.*;
+import com.safewind.application.controller.vo.RoleMenuVO;
 import com.safewind.application.controller.vo.RoleUserVO;
 import com.safewind.application.controller.vo.RoleVO;
 import com.safewind.common.page.PageResult;
@@ -34,4 +32,19 @@ public interface RoleConverter {
     RoleUserQueryBO roleUserQueryDTOToBO(RoleUserQueryDTO roleUserDTO);
 
     PageResult<RoleUserVO> pageBOToPageVO(PageResult<RoleUserListBO> roleUserListBO);
+
+    /**
+     * 角色菜单DTO转BO
+     */
+    RoleMenuBO roleMenuDTOToBO(RoleMenuDTO roleMenuDTO);
+
+    /**
+     * 角色菜单BO转VO
+     */
+    RoleMenuVO roleMenuBOToVO(RoleMenuListBO roleMenuListBO);
+
+    /**
+     * 角色菜单BO列表转VO列表
+     */
+    List<RoleMenuVO> roleMenuBOListToVOList(List<RoleMenuListBO> roleMenuListBOList);
 }

@@ -3,13 +3,17 @@ package com.safewind.infra.basic.service.impl;
 import com.safewind.common.annotation.EntityFill;
 import com.safewind.common.page.PageUtils;
 import com.safewind.infra.basic.entity.RoleUser;
+import com.safewind.infra.basic.entity.SysRole;
+import com.safewind.infra.basic.entity.SysUser;
 import com.safewind.infra.basic.entity.SysUserRole;
 import com.safewind.infra.basic.dao.SysUserRoleDao;
 import com.safewind.infra.basic.service.SysUserRoleService;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 用户和角色关联表(SysUserRole)表服务实现类
@@ -114,5 +118,10 @@ public class SysUserRoleServiceImpl implements SysUserRoleService {
     @Override
     public long queryDistributionRoleCount(RoleUser roleUser) {
         return this.sysUserRoleDao.queryDistributionRoleCount(roleUser);
+    }
+
+    @Override
+    public List<SysUserRole> queryByRoleId(Long roleId) {
+        return this.sysUserRoleDao.queryByRoleId(roleId);
     }
 }

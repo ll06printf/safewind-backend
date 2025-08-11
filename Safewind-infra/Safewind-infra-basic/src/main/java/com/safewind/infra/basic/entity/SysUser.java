@@ -4,6 +4,8 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 用户名(SysUser)实体类
@@ -45,9 +47,9 @@ public class SysUser implements Serializable {
     private SysUserInfo userInfo;
 
     /**
-     * 用户角色
+     * 用户角色列表 - 修改为支持多角色
      * */
-    private SysRole role;
+    private List<SysRole> roles;
 
     /**
      * 部门
@@ -78,6 +80,37 @@ public class SysUser implements Serializable {
      * 更新时间
      */
     private LocalDateTime updateTime;
+
+    /**
+     * 判断是否是超级管理员
+     * */
+    public boolean isAdmin() {
+        return this.id != null && this.id.equals(1L);
+    }
+
+    /**
+     * 获取用户的主要角色
+     * */
+    public SysRole getRole() {
+        if (roles != null && !roles.isEmpty()) {
+            return roles.get(0);
+        }
+        return null;
+    }
+
+    /**
+     * 设置用户的主要角色
+     * */
+    public void setRole(SysRole role) {
+        if (this.roles == null) {
+            this.roles = new ArrayList<>();
+        }
+        if (!this.roles.isEmpty()) {
+            this.roles.set(0, role);
+        } else {
+            this.roles.add(role);
+        }
+    }
 
 }
 

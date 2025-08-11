@@ -4,6 +4,7 @@ import com.safewind.common.page.Page;
 import com.safewind.infra.basic.entity.SysRole;
 import org.apache.ibatis.annotations.Param;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 角色信息表(SysRole)表数据库访问层
@@ -78,5 +79,13 @@ public interface SysRoleDao {
      * @return 角色列表
      */
     List<SysRole> queryRole(@Param("sysRole") SysRole sysRole, @Param("page") Page page);
+
+    /**
+     * 查询用户角色列表
+     *
+     * @param userId 用户ID
+     * @return 角色列表
+     */
+    List<SysRole> selectRolePermissionByUserId(Long userId);
 }
 

@@ -1,10 +1,12 @@
 package com.safewind.infra.basic.dao;
 
 import com.safewind.infra.basic.entity.RoleUser;
+import com.safewind.infra.basic.entity.SysRole;
 import com.safewind.infra.basic.entity.SysUserRole;
 import org.apache.ibatis.annotations.Param;
 
 import javax.management.relation.Role;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -112,5 +114,13 @@ public interface SysUserRoleDao {
      * @return 数量
      */
     long queryDistributionRoleCount(@Param("roleUser")RoleUser roleUser);
+
+    /**
+     * 通过角色id查询
+     *
+     * @param roleId 角色id
+     * @return 列表
+     */
+    List<SysUserRole> queryByRoleId(Long roleId);
 }
 

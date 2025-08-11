@@ -3,6 +3,7 @@ package com.safewind.application.controller.vo;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -29,68 +30,33 @@ public class UserVO {
      */
     private String email;
 
-    // ========== UserInfoBO 字段 ==========
     /**
-     * 用户昵称
+     * 用户信息表 - 对应 UserInfoBO
      */
-    private String nickname;
+    private UserInfoVO userInfo;
 
     /**
-     * 头像（默认图片）
+     * 用户角色列表 - 对应 List<UserRoleBO>，支持多角色
      */
-    private String avatar;
+    private List<UserRoleVO> roles;
 
     /**
-     * 年级（如 "2025"）
+     * 角色键列表
      */
-    private String grade;
+    private Set<String> roleKeys;
 
     /**
-     * 专业
+     * 部门信息 - 对应 UserDeptBO
      */
-    private String speciality;
+    private UserDeptVO dept;
 
     /**
-     * 学院
+     * 权限列表 - 对应 Set<String> permissions
      */
-    private String faculty;
+    private Set<String> permissions;
 
     /**
-     * 姓名
-     */
-    private String userInfoName;
-
-    /**
-     * 性别（1:男, 0:女）
-     */
-    private Integer sex;
-
-    /**
-     * 班级
-     */
-    private String className;
-
-    // ========== UserRoleBO 字段 ==========
-    /**
-     * 角色名称
-     */
-    private String roleName;
-
-    /**
-     * 角色权限字符串
-     */
-    private String roleKey;
-
-    // ========== UserDeptBO 字段 ==========
-    /**
-     * 部门名称
-     */
-    private String deptName;
-
-    // ========== 用户权限 字段 ==========
-    /**
-     * 拥有权限
-     */
-    private Set<String> permission;
-
+     * 是否是管理员
+     * */
+    private Boolean isAdmin;
 }

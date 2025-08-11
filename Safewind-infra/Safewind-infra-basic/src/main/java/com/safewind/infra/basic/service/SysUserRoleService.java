@@ -1,10 +1,12 @@
 package com.safewind.infra.basic.service;
 
 import com.safewind.infra.basic.entity.RoleUser;
+import com.safewind.infra.basic.entity.SysUser;
 import com.safewind.infra.basic.entity.SysUserRole;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * 用户和角色关联表(SysUserRole)表服务接口
@@ -101,4 +103,12 @@ public interface SysUserRoleService {
      * @return 数量
      */
     long queryDistributionRoleCount( RoleUser roleUser);
+
+    /**
+     * 通过角色ID查询数据
+     *
+     * @param roleId 角色ID
+     * @return 列表
+     */
+    List<SysUserRole> queryByRoleId(Long roleId);
 }

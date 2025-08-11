@@ -183,6 +183,10 @@
         </if>
     </select>
 
+    <select id="queryByRoleId" resultType="com.safewind.infra.basic.entity.SysUserRole">
+        select * from sys_user_role where role_id=#{roleId}
+    </select>
+
     <!--新增所有列-->
     <insert id="insert" keyProperty="userId" useGeneratedKeys="true">
         insert into sys_user_role(role_id,user_id,del_flag, create_by, create_time, update_by, update_time)

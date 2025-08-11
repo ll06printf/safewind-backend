@@ -2,8 +2,10 @@ package com.safewind.infra.basic.service;
 
 import com.safewind.common.page.Page;
 import com.safewind.infra.basic.entity.SysMenu;
+import com.safewind.infra.basic.entity.SysUser;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * 菜单权限表(SysMenu)表服务接口
@@ -67,4 +69,29 @@ public interface SysMenuService {
     Long count();
 
     List<SysMenu> query(SysMenu sysMenu);
+
+    /**
+     * 获取用户权限
+     * */
+    Set<String> getMenuPermissions(SysUser user);
+
+    /**
+     * 通过角色ID查询权限
+     * */
+    Set<String> selectMenuPermsByRoleId(Long roleId);
+
+    /**
+     * 获取菜单树信息
+     * */
+    List<SysMenu> selectMenuTreeAll();
+
+    /**
+     * 通过用户ID查询权限
+     * */
+    List<SysMenu> selectMenuTreeByUserId(Long userId);
+
+    /**
+     * 通过ID查询权限
+     * */
+    List<SysMenu> queryByIds(List<Long> menuIds);
 }

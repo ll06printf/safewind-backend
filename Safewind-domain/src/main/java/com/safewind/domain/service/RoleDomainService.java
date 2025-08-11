@@ -3,6 +3,8 @@ package com.safewind.domain.service;
 import com.safewind.common.page.PageResult;
 import com.safewind.domain.bo.*;
 
+import java.util.List;
+
 /**
  * @author: Darven
  * @createTime: 2025-07-01  10:51
@@ -27,4 +29,19 @@ public interface RoleDomainService {
     boolean batchCancelAuthorizeUser(RoleUserBO roleUserBO);
     // 分配单个用户
     boolean distributionSingleRole(RoleUserBO roleUserBO);
+
+    /**
+     * 查询角色已分配的菜单权限
+     */
+    List<RoleMenuListBO> queryRoleMenus(Long roleId);
+
+    /**
+     * 分配菜单权限给角色
+     */
+    boolean assignMenusToRole(RoleMenuBO roleMenuBO);
+
+    /**
+     * 查询所有菜单（包含是否已分配给角色的标识）
+     */
+    List<RoleMenuListBO> queryAllMenusWithRoleStatus(Long roleId);
 }

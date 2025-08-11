@@ -1,10 +1,8 @@
 package com.safewind.application.controller.controller.admin;
 
 import com.safewind.application.controller.converter.RoleConverter;
-import com.safewind.application.controller.dto.RoleDTO;
-import com.safewind.application.controller.dto.RoleQueryDTO;
-import com.safewind.application.controller.dto.RoleUserDTO;
-import com.safewind.application.controller.dto.RoleUserQueryDTO;
+import com.safewind.application.controller.dto.*;
+import com.safewind.application.controller.vo.RoleMenuVO;
 import com.safewind.application.controller.vo.RoleUserVO;
 import com.safewind.application.controller.vo.RoleVO;
 import com.safewind.common.annotation.ApiOperationLog;
@@ -16,10 +14,9 @@ import com.safewind.domain.bo.*;
 import com.safewind.domain.service.RoleDomainService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 /**
@@ -145,6 +142,46 @@ public class SysRoleController {
         RoleUserBO roleUserBO = RoleConverter.INSTANCE.roleUserDTOToBO(roleUserDTO);
         return roleDomainService.batchCancelAuthorizeUser(roleUserBO)?Result.success() : Result.fail("批量取消授权用户失败");
     }
+
+    @ApiOperationLog(description = "查询角色已分配的菜单权限")
+    @PostMapping("/queryRoleMenus")
+    public Result<List<RoleMenuVO>> queryRoleMenus(@RequestBody RoleMenuDTO roleMenuDTO) {
+        if (roleMenuDTO.getRoleId() == null) {
+            throw new BizException(RoleExceptionEnum.ID_NOT_NULL);
+        }
+
+        List<RoleMenuListBO> roleMenuList = roleDomainService.queryRoleMenus(roleMenuDTO.getRoleId());
+        List<RoleMenuVO> roleMenuVOs = RoleConverter.INSTANCE.roleMenuBOListToVOList(roleMenuList);
+
+        return Result.success(roleMenuVOs);
+    }
+
+    @ApiOperationLog(description = "分配菜单权限给角色")
+    @PostMapping("/assignMenusToRole")
+    public Result<Boolean> assignMenusToRole(@RequestBody RoleMenuDTO roleMenuDTO) {
+        if (roleMenuDTO.getRoleId() == null) {
+            throw new BizException(RoleExceptionEnum.ID_NOT_NULL);
+        }
+
+        RoleMenuBO roleMenuBO = RoleConverter.INSTANCE.roleMenuDTOToBO(roleMenuDTO);
+        boolean success = roleDomainService.assignMenusToRole(roleMenuBO);
+
+        return success ? Result.success() : Result.fail("分配菜单权限失败");
+    }
+
+    @ApiOperationLog(description = "查询所有菜单（包含角色分配状态）")
+    @PostMapping("/queryAllMenusWithRoleStatus")
+    public Result<List<RoleMenuVO>> queryAllMenusWithRoleStatus(@RequestBody RoleMenuDTO roleMenuDTO) {
+        if (roleMenuDTO.getRoleId() == null) {
+            throw new BizException(RoleExceptionEnum.ID_NOT_NULL);
+        }
+
+        List<RoleMenuListBO> roleMenuList = roleDomainService.queryAllMenusWithRoleStatus(roleMenuDTO.getRoleId());
+        List<RoleMenuVO> roleMenuVOs = RoleConverter.INSTANCE.roleMenuBOListToVOList(roleMenuList);
+
+        return Result.success(roleMenuVOs);
+    }
+
 
     /**
      * @param: roleDTO
