@@ -1,11 +1,15 @@
 package com.safewind.infra.basic.service.impl;
 
 import com.safewind.common.annotation.EntityFill;
-import com.safewind.infra.basic.entity.WsWall;
+import com.safewind.common.page.PageResult;
+import com.safewind.common.page.PageUtils;
 import com.safewind.infra.basic.dao.WsWallDao;
+import com.safewind.infra.basic.entity.WsWall;
+import com.safewind.infra.basic.entity.WsQueryWall;
 import com.safewind.infra.basic.service.WsWallService;
-import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * 海风墙(WsWall)表服务实现类
@@ -15,8 +19,12 @@ import org.springframework.stereotype.Service;
  */
 @Service("wsWallService")
 public class WsWallServiceImpl implements WsWallService {
-    @Resource
-    private WsWallDao wsWallDao;
+
+    private final WsWallDao wsWallDao;
+
+    public WsWallServiceImpl(WsWallDao wsWallDao) {
+        this.wsWallDao = wsWallDao;
+    }
 
     /**
      * 通过ID查询单条数据
@@ -64,5 +72,42 @@ public class WsWallServiceImpl implements WsWallService {
     @Override
     public boolean deleteById(Long id) {
         return this.wsWallDao.deleteById(id) > 0;
+    }
+
+    /**
+     * 分页查询弹幕列表
+     *
+     * @param queryWall 查询条件
+     * @param pageNum 页码
+     * @param pageSize 每页大小
+     * @return 分页结果
+     */
+    @Override
+    public PageResult<WsWall> queryPage(WsQueryWall queryWall, Long pageNum, Long pageSize) {
+        List<WsWall> data = this.wsWallDao.queryPage(queryWall, PageUtils.getOffset(pageNum, pageSize), pageSize);
+        long count = this.wsWallDao.count(queryWall);
+        return PageResult.<WsWall>builder()
+                .data(data)
+                .totalSize(count)
+                .totalPages(PageUtils.getTotalPage(count, pageSize))
+                .pageNum(pageNum)
+                .pageSize(pageSize)
+                .build();
+    }
+
+    /**
+     * 获取最新弹幕列表
+     *
+     * @param limit 限制数量
+     * @return 最新弹幕列表
+     */
+    @Override
+    public List<WsWall> getLatestWalls(Integer limit) {
+        return this.wsWallDao.queryByLimit(limit);
+    }
+
+    @Override
+    public long count(WsQueryWall query) {
+        return this.wsWallDao.count(query);
     }
 }

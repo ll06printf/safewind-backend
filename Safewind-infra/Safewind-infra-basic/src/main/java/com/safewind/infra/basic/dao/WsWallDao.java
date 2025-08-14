@@ -1,6 +1,8 @@
 package com.safewind.infra.basic.dao;
 
+import com.safewind.common.page.PageResult;
 import com.safewind.infra.basic.entity.WsWall;
+import com.safewind.infra.basic.entity.WsQueryWall;
 import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
@@ -20,14 +22,33 @@ public interface WsWallDao {
      */
     WsWall queryById(Long id);
 
+    /**
+     * 限制查询数量的弹幕
+     *
+     * @param limit 限制数量
+     * @return 实例对象列表
+     */
+    List<WsWall> queryByLimit(@Param("limit") Integer limit);
+
+    /**
+     * 分页查询弹幕列表
+     *
+     * @param queryWall 查询条件
+     * @param pageNum 页码
+     * @param pageSize 每页大小
+     * @return 分页结果
+     */
+    List<WsWall> queryPage(@Param("queryWall") WsQueryWall queryWall,
+                                 @Param("pageNum") Long pageNum,
+                                 @Param("pageSize") Long pageSize);
 
     /**
      * 统计总行数
      *
-     * @param wsWall 查询条件
+     * @param queryWall 查询条件
      * @return 总行数
      */
-    long count(WsWall wsWall);
+    long count(@Param("queryWall") WsQueryWall queryWall);
 
     /**
      * 新增数据
@@ -70,5 +91,11 @@ public interface WsWallDao {
      */
     int deleteById(Long id);
 
+    /**
+     * 统计分页总行数
+     *
+     * @param queryWall 查询条件
+     * @return 总行数
+     */
+    long countPage(@Param("queryWall") WsQueryWall queryWall);
 }
-
