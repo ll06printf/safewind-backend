@@ -6,40 +6,40 @@ import java.time.LocalDateTime;
 
 /**
  * @author: Darven
- * @createTime: 2025-08-01  18:41
- * @description: 官网活动展示实体
+ * @createTime: 2025-08-11  23:29
+ * @description: 新闻VO
  */
 @Data
-public class WsActivityVO {
+public class NewsVO {
     /**
-     * 活动ID
+     * 新闻ID
      */
     private Long id;
 
     /**
-     * 活动标题
+     * 新闻标题
      */
     private String title;
 
     /**
-     * 活动简介
+     * 发布时间
      */
-    private String brief;
+    private LocalDateTime publishTime;
 
     /**
-     * 活动详情
+     * 新闻内容
      */
-    private String introduction;
+    private String content;
 
     /**
-     * 活动时间
+     * 新闻内容/html
      */
-    private LocalDateTime startTime;
+    private String htmlContent;
 
     /**
-     * 活动图片
+     * 封面图片
      */
-    private String picture;
+    private String coverImg;
 
     /**
      * 创建时间

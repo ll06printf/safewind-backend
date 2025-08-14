@@ -4,7 +4,7 @@
 
     <resultMap type="com.safewind.infra.basic.entity.WsNews" id="WsNewsMap">
         <result property="id" column="id" jdbcType="INTEGER"/>
-        <result property="title" column="title" jdbcType="INTEGER"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
         <result property="publishTime" column="publish_time" jdbcType="TIMESTAMP"/>
         <result property="content" column="content" jdbcType="VARCHAR"/>
         <result property="delFlag" column="del_flag" jdbcType="VARCHAR"/>
@@ -30,7 +30,8 @@
                update_by,
                update_time
         from ws_news
-        where id = #{id}
+        where del_flag='0'
+        and id = #{id}
     </select>
 
     <!--查询指定行数据-->
@@ -76,6 +77,7 @@
         select count(1)
         from ws_news
         <where>
+            del_flag='0'
             <if test="id != null">
                 and id = #{id}
             </if>
@@ -106,6 +108,50 @@
         </where>
     </select>
 
+    <!-- 分页查询 -->
+    <select id="queryPage" resultMap="WsNewsMap">
+        SELECT
+        id, title, publish_time, content, html_content, cover_img, del_flag, create_by, create_time, update_by, update_time
+        FROM ws_news
+        <where>
+            del_flag = '0'
+            <!-- 模糊查询标题 -->
+            <if test="query.title != null and query.title !=''">
+                AND title LIKE CONCAT('%', #{query.title}, '%')
+            </if>
+            <!--模糊时间查询-->
+            <if test="query.startTime != null and query.startTime != ''">
+                <if test="query.endTime != null and query.endTime != ''">
+                    AND publish_time BETWEEN #{query.startTime} AND #{query.endTime}
+                </if>
+            </if>
+        </where>
+        <!-- 按发布时间倒序排列 -->
+        ORDER BY publish_time DESC
+        <!-- 分页参数 -->
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <select id="countNews" resultType="java.lang.Long">
+        SELECT
+        count(1)
+        FROM ws_news
+        <where>
+            del_flag = '0'
+            <!-- 模糊查询标题 -->
+            <if test="query.title != null and query.title !=''">
+                AND title LIKE CONCAT('%', #{query.title}, '%')
+            </if>
+            <!--模糊时间查询-->
+            <if test="query.startTime != null and query.startTime != ''">
+                <if test="query.endTime != null and query.endTime != ''">
+                    AND publish_time BETWEEN #{query.startTime} AND #{query.endTime}
+                </if>
+            </if>
+        </where>
+        Limit #{offset},#{limit}
+    </select>
+
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
         insert into ws_news(title, publish_time, content, html_content,
@@ -120,7 +166,6 @@
                 #{createTime},
                 #{updateBy},
                 #{updateTime})
-
     </insert>
 
     <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">

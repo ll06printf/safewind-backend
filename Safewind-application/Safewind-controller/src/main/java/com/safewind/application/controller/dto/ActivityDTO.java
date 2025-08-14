@@ -1,4 +1,4 @@
-package com.safewind.application.controller.vo;
+package com.safewind.application.controller.dto;
 
 import lombok.Data;
 
@@ -6,11 +6,11 @@ import java.time.LocalDateTime;
 
 /**
  * @author: Darven
- * @createTime: 2025-08-01  18:41
- * @description: 官网活动展示实体
+ * @createTime: 2025-08-13  00:09
+ * @description: TODO
  */
 @Data
-public class WsActivityVO {
+public class ActivityDTO {
     /**
      * 活动ID
      */
@@ -40,14 +40,4 @@ public class WsActivityVO {
      * 活动图片
      */
     private String picture;
-
-    /**
-     * 创建时间
-     */
-    private LocalDateTime createTime;
-
-    /**
-     * 更新时间
-     */
-    private LocalDateTime updateTime;
 }

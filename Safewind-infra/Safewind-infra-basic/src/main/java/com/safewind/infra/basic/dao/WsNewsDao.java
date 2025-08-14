@@ -1,6 +1,7 @@
 package com.safewind.infra.basic.dao;
 
 import com.safewind.infra.basic.entity.WsNews;
+import com.safewind.infra.basic.entity.WsNewsQuery;
 import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
@@ -70,5 +71,24 @@ public interface WsNewsDao {
      */
     int deleteById(Long id);
 
+    /**
+     * 分页查询
+     *
+     * @param query 查询条件
+     * @param offset 偏移量
+     * @param limit 页面大小
+     * @return 结果
+     */
+    List<WsNews> queryPage(@Param("query") WsNewsQuery query, @Param("offset") Long offset, @Param("limit") Long limit);
+
+    /**
+     * 查询总数
+     *
+     * @param query  查询条件
+     * @param offset
+     * @param limit
+     * @return 总数
+     */
+    Long countNews(@Param("query") WsNewsQuery query,@Param("offset") Long offset, @Param("limit") Long limit);
 }
 

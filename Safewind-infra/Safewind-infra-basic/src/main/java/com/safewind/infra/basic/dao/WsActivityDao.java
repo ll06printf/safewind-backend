@@ -1,7 +1,9 @@
 package com.safewind.infra.basic.dao;
 
 import com.safewind.infra.basic.entity.WsActivity;
+import com.safewind.infra.basic.entity.WsQueryActivity;
 import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 
 /**
@@ -19,7 +21,6 @@ public interface WsActivityDao {
      * @return 实例对象
      */
     WsActivity queryById(Long id);
-
 
     /**
      * 统计总行数
@@ -69,6 +70,34 @@ public interface WsActivityDao {
      * @return 影响行数
      */
     int deleteById(Long id);
+
+    /**
+     * 查询指定行数据
+     *
+     * @param wsQueryActivity 查询条件
+     * @param offset          偏移量
+     * @param limit           查询数量
+     * @return 对象列表
+     */
+    List<WsActivity> queryAllByLimit(@Param("query") WsQueryActivity wsQueryActivity,
+                                     @Param("offset") Long offset,
+                                     @Param("limit") Long limit);
+
+    /**
+     * 获取最新活动列表
+     *
+     * @param limit 限制数量
+     * @return 最新活动列表
+     */
+    List<WsActivity> getLatestActivities(@Param("limit") Integer limit);
+
+    /**
+     * 获取活动数量
+     *
+     * @param wsQueryActivity 查询参数
+     * @return 活动数量
+     */
+    long countActivity(@Param("query") WsQueryActivity wsQueryActivity);
 
 }
 

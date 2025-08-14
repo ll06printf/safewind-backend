@@ -12,8 +12,8 @@ import lombok.Getter;
 @Getter
 public enum CommonStatusEnum {
 
-    DELETE_STATUS("0","删除/停用"),
-    EXISTS_STATUS("2","正常/启用");
+    EXISTS_STATUS("0","正常/启用"),
+    DELETE_STATUS("2","删除/停用");
 
     private final String status;
 

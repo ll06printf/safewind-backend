@@ -1,5 +1,6 @@
 package com.safewind.infra.basic.entity;
 
+import com.safewind.common.entity.BaseEntity;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,14 +16,14 @@ import java.io.Serializable;
  */
 @Setter
 @Getter
-public class WsNews implements Serializable {
+public class WsNews extends BaseEntity implements Serializable {
     private static final long serialVersionUID = -49098484929198511L;
 
     private Long id;
     /**
      * 新闻标题
      */
-    private Long title;
+    private String title;
     /**
      * 发布时间
      */
@@ -59,7 +60,5 @@ public class WsNews implements Serializable {
      * 更新时间
      */
     private LocalDateTime updateTime;
-
-
 }
 

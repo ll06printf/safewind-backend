@@ -4,8 +4,8 @@
 
     <resultMap type="com.safewind.infra.basic.entity.WsActivity" id="WsActivityMap">
         <result property="id" column="id" jdbcType="INTEGER"/>
-        <result property="titile" column="titile" jdbcType="VARCHAR"/>
-        <result property="breif" column="breif" jdbcType="VARCHAR"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="brief" column="brief" jdbcType="VARCHAR"/>
         <result property="introduction" column="introduction" jdbcType="VARCHAR"/>
         <result property="startTime" column="start_time" jdbcType="TIMESTAMP"/>
         <result property="picture" column="picture" jdbcType="VARCHAR"/>
@@ -19,8 +19,8 @@
     <!--查询单个-->
     <select id="queryById" resultMap="WsActivityMap">
         select id,
-               titile,
-               breif,
+               title,
+               brief,
                introduction,
                start_time,
                picture,
@@ -31,121 +31,106 @@
                update_time
         from ws_activity
         where id = #{id}
+          and del_flag = '0'
     </select>
 
-    <!--查询指定行数据-->
+    <!-- 查询指定行数据 -->
     <select id="queryAllByLimit" resultMap="WsActivityMap">
-        select
-        id, titile, breif, introduction, start_time, picture, del_flag, create_by, create_time, update_by, update_time
-        from ws_activity
+        SELECT
+        id, title, brief, introduction, start_time,
+        picture, del_flag, create_by, create_time, update_by, update_time
+        FROM ws_activity
         <where>
-            <if test="id != null">
-                and id = #{id}
+            del_flag = '0'
+            <if test="query.title != null and query.title != ''">
+                AND title LIKE CONCAT('%', #{query.title}, '%')
             </if>
-            <if test="titile != null and titile != ''">
-                and titile = #{titile}
+            <if test="query.brief != null and query.brief != ''">
+                AND brief LIKE CONCAT('%', #{query.brief}, '%')
             </if>
-            <if test="breif != null and breif != ''">
-                and breif = #{breif}
-            </if>
-            <if test="introduction != null and introduction != ''">
-                and introduction = #{introduction}
-            </if>
-            <if test="startTime != null">
-                and start_time = #{startTime}
-            </if>
-            <if test="picture != null and picture != ''">
-                and picture = #{picture}
-            </if>
-            <if test="delFlag != null and delFlag != ''">
-                and del_flag = #{delFlag}
-            </if>
-            <if test="createBy != null and createBy != ''">
-                and create_by = #{createBy}
-            </if>
-            <if test="createTime != null">
-                and create_time = #{createTime}
-            </if>
-            <if test="updateBy != null and updateBy != ''">
-                and update_by = #{updateBy}
-            </if>
-            <if test="updateTime != null">
-                and update_time = #{updateTime}
+            <if test="query.startTime != null and query.startTime != '' and query.endTime != null and query.endTime != ''">
+                AND start_time BETWEEN #{query.startTime} AND #{query.endTime}
             </if>
         </where>
-        limit #{pageable.offset}, #{pageable.pageSize}
+        ORDER BY start_time DESC, create_time DESC
+        LIMIT #{offset}, #{limit}
     </select>
+
 
     <!--统计总行数-->
     <select id="count" resultType="java.lang.Long">
         select count(1)
         from ws_activity
         <where>
+            del_flag = '0'
             <if test="id != null">
                 and id = #{id}
             </if>
-            <if test="titile != null and titile != ''">
-                and titile = #{titile}
+            <if test="title != null and title != ''">
+                and title like concat('%', #{title}, '%')
             </if>
-            <if test="breif != null and breif != ''">
-                and breif = #{breif}
-            </if>
-            <if test="introduction != null and introduction != ''">
-                and introduction = #{introduction}
+            <if test="brief != null and brief != ''">
+                and brief like concat('%', #{brief}, '%')
             </if>
             <if test="startTime != null">
                 and start_time = #{startTime}
-            </if>
-            <if test="picture != null and picture != ''">
-                and picture = #{picture}
-            </if>
-            <if test="delFlag != null and delFlag != ''">
-                and del_flag = #{delFlag}
-            </if>
-            <if test="createBy != null and createBy != ''">
-                and create_by = #{createBy}
-            </if>
-            <if test="createTime != null">
-                and create_time = #{createTime}
-            </if>
-            <if test="updateBy != null and updateBy != ''">
-                and update_by = #{updateBy}
-            </if>
-            <if test="updateTime != null">
-                and update_time = #{updateTime}
             </if>
         </where>
     </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
-        insert into ws_activity(titile, breif, introduction, start_time, picture, del_flag, create_by, create_time,
-                                update_by, update_time)
-        values (#{titile}, #{breif}, #{introduction}, #{startTime}, #{picture}, #{delFlag}, #{createBy}, #{createTime},
-                #{updateBy}, #{updateTime})
+        insert into ws_activity(title, brief, introduction, start_time,
+                                picture, del_flag, create_by, create_time, update_by, update_time)
+        values (#{title},
+                #{brief},
+                #{introduction},
+                #{startTime},
+                #{picture},
+                #{delFlag},
+                #{createBy},
+                #{createTime},
+                #{updateBy},
+                #{updateTime})
     </insert>
 
     <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into ws_activity(titile, breif, introduction, start_time, picture, del_flag, create_by, create_time,
-        update_by, update_time)
+        insert into ws_activity(title, brief, introduction, start_time,
+        picture, del_flag, create_by, create_time, update_by, update_time)
         values
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.titile}, #{entity.breif}, #{entity.introduction}, #{entity.startTime}, #{entity.picture},
-            #{entity.delFlag}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime})
+            (#{entity.title},
+            #{entity.brief},
+            #{entity.introduction},
+            #{entity.startTime},
+            #{entity.picture},
+            #{entity.delFlag},
+            #{entity.createBy},
+            #{entity.createTime},
+            #{entity.updateBy},
+            #{entity.updateTime})
         </foreach>
     </insert>
 
     <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into ws_activity(titile, breif, introduction, start_time, picture, del_flag, create_by, create_time,
-        update_by, update_time)
+        insert into ws_activity(title, brief, introduction, start_time,
+        picture, del_flag, create_by, create_time, update_by, update_time)
         values
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.titile}, #{entity.breif}, #{entity.introduction}, #{entity.startTime}, #{entity.picture},
-            #{entity.delFlag}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime})
+            (#{entity.title},
+            #{entity.brief},
+            #{entity.introduction},
+            #{entity.startTime},
+            #{entity.picture},
+            #{entity.delFlag},
+            #{entity.createBy},
+            #{entity.createTime},
+            #{entity.updateBy},
+            #{entity.updateTime})
         </foreach>
         on duplicate key update
-        titile = values(titile),
-        breif = values(breif),
+        title = values(title),
+        brief = values(brief),
         introduction = values(introduction),
         start_time = values(start_time),
         picture = values(picture),
@@ -160,11 +145,11 @@
     <update id="update">
         update ws_activity
         <set>
-            <if test="titile != null and titile != ''">
-                titile = #{titile},
+            <if test="title != null and title != ''">
+                title = #{title},
             </if>
-            <if test="breif != null and breif != ''">
-                breif = #{breif},
+            <if test="brief != null and brief != ''">
+                brief = #{brief},
             </if>
             <if test="introduction != null and introduction != ''">
                 introduction = #{introduction},
@@ -196,10 +181,47 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete
-        from ws_activity
+        update ws_activity
+        set del_flag = '2'
         where id = #{id}
     </delete>
 
-</mapper>
+    <!--获取最新活动列表-->
+    <select id="getLatestActivities" resultMap="WsActivityMap">
+        select id,
+               title,
+               brief,
+               introduction,
+               start_time,
+               picture,
+               del_flag,
+               create_by,
+               create_time,
+               update_by,
+               update_time
+        from ws_activity
+        where del_flag = '0'
+        order by start_time desc, create_time desc
+        limit #{limit}
+    </select>
 
+    <!-- 查询指定行数据 -->
+    <select id="countActivity" resultType="java.lang.Long">
+        SELECT
+        count(*)
+        FROM ws_activity
+        <where>
+            del_flag = '0'
+            <if test="query.title != null and query.title != ''">
+                AND title LIKE CONCAT('%', #{query.title}, '%')
+            </if>
+            <if test="query.brief != null and query.brief != ''">
+                AND brief LIKE CONCAT('%', #{query.brief}, '%')
+            </if>
+            <if test="query.startTime != null and query.startTime != '' and query.endTime != null and query.endTime != ''">
+                AND start_time BETWEEN #{query.startTime} AND #{query.endTime}
+            </if>
+        </where>
+    </select>
+
+</mapper>
