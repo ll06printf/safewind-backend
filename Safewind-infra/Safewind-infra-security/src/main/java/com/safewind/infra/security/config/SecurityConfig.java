@@ -1,5 +1,6 @@
 package com.safewind.infra.security.config;
 
+import com.safewind.infra.security.aspect.PermitAllUrlProperties;
 import com.safewind.infra.security.filter.JwtAuthenticationTokenFilter;
 import com.safewind.infra.security.handle.LogoutSuccessHandlerImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +63,12 @@ public class SecurityConfig {
     private JwtAuthenticationTokenFilter authenticationTokenFilter;
 
     /**
+     * 允许访问的url
+     */
+    @Autowired
+    private PermitAllUrlProperties permitAllUrlProperties;
+
+    /**
      * anyRequest()        |   匹配所有请求路径，通常用于设置全局访问规则。
      * access(String)      |   根据传入的 Spring EL 表达式判断是否允许访问。
      * anonymous()         |   允许匿名用户（未登录用户）访问指定资源。
@@ -91,6 +98,8 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 // 注解标记允许匿名访问的url
                 .authorizeHttpRequests((requests) -> {
+                    // 匿名注解访问
+                    permitAllUrlProperties.getPermitAllUrl().forEach(url -> requests.requestMatchers(url).permitAll());
                     // 对于登录login 注册register 验证码captchaImage 允许匿名访问
                     requests.requestMatchers("/user/login", "/register", "/captchaImage").permitAll()
                             // 静态资源，可匿名访问
