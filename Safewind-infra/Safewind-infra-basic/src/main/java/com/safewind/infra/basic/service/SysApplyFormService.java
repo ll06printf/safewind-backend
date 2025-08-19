@@ -1,5 +1,6 @@
 package com.safewind.infra.basic.service;
 
+import com.safewind.common.page.PageResult;
 import com.safewind.infra.basic.entity.SysApplyForm;
 
 /**
@@ -42,4 +43,29 @@ public interface SysApplyFormService {
      */
     boolean deleteById(Long id);
 
+    /**
+     * 逻辑删除数据
+     *
+     * @param id 主键
+     * @return 是否成功
+     */
+    boolean softDeleteById(Long id);
+
+    /**
+     * 分页查询申请列表
+     *
+     * @param sysApplyForm 查询条件
+     * @param pageNum 页码
+     * @param pageSize 每页大小
+     * @return 分页结果
+     */
+    PageResult<SysApplyForm> queryPage(SysApplyForm sysApplyForm, Long pageNum, Long pageSize);
+
+    /**
+     * 根据学号查询申请
+     *
+     * @param studentId 学号
+     * @return 申请
+     */
+    SysApplyForm queryByStudentId(String studentId);
 }

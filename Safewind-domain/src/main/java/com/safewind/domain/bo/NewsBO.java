@@ -44,6 +44,16 @@ public class NewsBO {
     private String coverImg;
 
     /**
+     * 是否外链
+     * */
+    private String isLink;
+
+    /**
+     * 外链
+     * */
+    private String externalLink;
+
+    /**
      * 删除标志（0代表存在 2代表删除）
      */
     private String delFlag;

@@ -7,6 +7,8 @@
         <result property="title" column="title" jdbcType="VARCHAR"/>
         <result property="publishTime" column="publish_time" jdbcType="TIMESTAMP"/>
         <result property="content" column="content" jdbcType="VARCHAR"/>
+        <result property="externalLink" column="external_link" jdbcType="VARCHAR"/>
+        <result property="isLink" column="is_link" jdbcType="VARCHAR"/>
         <result property="delFlag" column="del_flag" jdbcType="VARCHAR"/>
         <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
@@ -24,21 +26,23 @@
                content,
                html_content,
                cover_img,
+               is_link,
+               external_link,
                del_flag,
                create_by,
                create_time,
                update_by,
                update_time
         from ws_news
-        where del_flag='0'
-        and id = #{id}
+        where del_flag = '0'
+          and id = #{id}
     </select>
 
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="WsNewsMap">
         select
         id, title, publish_time, content,html_content,
-        cover_img, del_flag, create_by, create_time, update_by, update_time
+        cover_img, is_link, external_link, del_flag, create_by, create_time, update_by, update_time
         from ws_news
         <where>
             <if test="id != null">
@@ -111,7 +115,8 @@
     <!-- 分页查询 -->
     <select id="queryPage" resultMap="WsNewsMap">
         SELECT
-        id, title, publish_time, content, html_content, cover_img, del_flag, create_by, create_time, update_by, update_time
+        id, title, publish_time, content, html_content, cover_img, is_link, external_link, del_flag, create_by,
+        create_time, update_by, update_time
         FROM ws_news
         <where>
             del_flag = '0'
@@ -149,18 +154,19 @@
                 </if>
             </if>
         </where>
-        Limit #{offset},#{limit}
     </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
         insert into ws_news(title, publish_time, content, html_content,
-                            cover_img, del_flag, create_by, create_time, update_by, update_time)
+                            cover_img, is_link, external_link, del_flag, create_by, create_time, update_by, update_time)
         values (#{title},
                 #{publishTime},
                 #{content},
                 #{htmlContent},
                 #{coverImg},
+                #{isLink},
+                #{externalLink},
                 #{delFlag},
                 #{createBy},
                 #{createTime},
@@ -170,7 +176,7 @@
 
     <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
         insert into ws_news(title, publish_time, content,html_content,
-        cover_img, del_flag, create_by, create_time, update_by, update_time)
+        cover_img, is_link,external_link,del_flag, create_by, create_time, update_by, update_time)
         values
         <foreach collection="entities" item="entity" separator=",">
             (#{entity.title},
@@ -178,6 +184,8 @@
             #{entity.content},
             #{entity.htmlContent},
             #{entity.coverImg},
+            #{entity.isLink},
+            #{entity.externalLink},
             #{entity.delFlag},
             #{entity.createBy},
             #{entity.createTime},
@@ -189,7 +197,7 @@
 
     <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
         insert into ws_news(title, publish_time, content, html_content,
-        cover_img,del_flag, create_by, create_time, update_by, update_time)
+        cover_img, is_link,external_link, del_flag, create_by, create_time, update_by, update_time)
         values
         <foreach collection="entities" item="entity" separator=",">
             (#{entity.title},
@@ -197,6 +205,8 @@
             #{entity.content},
             #{entity.htmlContent},
             #{entity.coverImg},
+            #{entity.isLink},
+            #{entity.externalLink},
             #{entity.delFlag},
             #{entity.createBy},
             #{entity.createTime},
@@ -209,6 +219,8 @@
         content = values(content),
         html_content = values(html_content),
         cover_img = values(cover_img),
+        is_link = values(is_link),
+        external_link = values(external_link),
         del_flag = values(del_flag),
         create_by = values(create_by),
         create_time = values(create_time),
@@ -229,6 +241,18 @@
             </if>
             <if test="content != null and content != ''">
                 content = #{content},
+            </if>
+            <if test="htmlContent != null and htmlContent != ''">
+                html_content = #{htmlContent},
+            </if>
+            <if test="coverImg != null and coverImg != ''">
+                cover_img = #{coverImg},
+            </if>
+            <if test="isLink != null and isLink != ''">
+                is_link = #{isLink},
+            </if>
+            <if test="externalLink != null and externalLink != ''">
+                external_link = #{externalLink},
             </if>
             <if test="delFlag != null and delFlag != ''">
                 del_flag = #{delFlag},
@@ -257,4 +281,3 @@
     </delete>
 
 </mapper>
-

@@ -7,6 +7,7 @@ import com.safewind.domain.bo.ActivityBO;
 import com.safewind.domain.bo.ActivityListBO;
 import com.safewind.domain.bo.ActivityQueryBO;
 import com.safewind.domain.converter.ActivityDomainConverter;
+import com.safewind.domain.markdown.MarkdownHelper;
 import com.safewind.domain.service.ActivityDomainService;
 import com.safewind.infra.basic.entity.WsActivity;
 import com.safewind.infra.basic.entity.WsQueryActivity;
@@ -57,7 +58,9 @@ public class ActivityDomainServiceImpl implements ActivityDomainService {
         if (wsActivity == null) {
             return null;
         }
-        return ActivityDomainConverter.INSTANCE.entityToBO(wsActivity);
+        ActivityBO activityBO = ActivityDomainConverter.INSTANCE.entityToBO(wsActivity);
+        // 转化成 md 格式
+        return activityBO;
     }
 
     @Override
@@ -93,6 +96,48 @@ public class ActivityDomainServiceImpl implements ActivityDomainService {
     @Override
     public List<ActivityListBO> getLatestActivities(Integer limit) {
         List<WsActivity> latestActivities = wsActivityService.getLatestActivities(limit);
+         // 转化成 MD
+        latestActivities.forEach(activity -> {
+            activity.setIntroduction(MarkdownHelper.convertMarkdown2Html(activity.getIntroduction()));
+        });
         return ActivityDomainConverter.INSTANCE.entityListToListBOList(latestActivities);
+    }
+
+    @Override
+    public ActivityBO getWsActivityById(Long id) {
+        WsActivity wsActivity = wsActivityService.queryById(id);
+        if (wsActivity == null) {
+            return null;
+        }
+        // 转化 MD
+        wsActivity.setIntroduction(MarkdownHelper.convertMarkdown2Html(wsActivity.getIntroduction()));
+        return ActivityDomainConverter.INSTANCE.entityToBO(wsActivity);
+    }
+
+    @Override
+    public PageResult<ActivityBO> queryWsActivityPage(ActivityQueryBO queryBO) {
+        // 构建查询条件
+        WsQueryActivity query = new WsQueryActivity();
+        query.setTitle(queryBO.getTitle());
+        query.setStartTime(queryBO.getStartTime());
+        query.setEndTime(queryBO.getEndTime());
+        // 调用基础设施层服务
+        PageResult<WsActivity> pageResult = wsActivityService.queryPage(query, queryBO.getPageNum(), queryBO.getPageSize());
+
+        // 转换为领域对象
+        List<ActivityBO> activityBOList = ActivityDomainConverter.INSTANCE.entityListToBOList(pageResult.getData());
+
+        // 转化 MD
+        activityBOList.forEach(activity -> {
+            activity.setIntroduction(MarkdownHelper.convertMarkdown2Html(activity.getIntroduction()));
+        });
+
+        return PageResult.<ActivityBO>builder()
+                .data(activityBOList)
+                .totalSize(pageResult.getTotalSize())
+                .totalPages(pageResult.getTotalPages())
+                .pageNum(pageResult.getPageNum())
+                .pageSize(pageResult.getPageSize())
+                .build();
     }
 }

@@ -43,4 +43,22 @@ public interface SysReviewService {
      */
     boolean deleteById(Long id);
 
+
+    /**
+     * 逻辑删除数据
+     *
+     * @param id 主键
+     *
+     * @return 是否成功
+     */
+    boolean softDeleteById(Long id);
+
+    /**
+     * 通过申请ID查询单条数据
+     *
+     * @param id 申请ID
+     *           @param status 状态
+     * @return 实例对象
+     */
+    SysReview queryByApplyId(Long id,Integer status);
 }

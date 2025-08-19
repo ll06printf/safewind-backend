@@ -2,6 +2,7 @@ package com.safewind.application.controller.controller.web;
 
 import com.safewind.application.controller.converter.ActivityConverter;
 import com.safewind.application.controller.vo.WsActivityVO;
+import com.safewind.common.annotation.Anonymous;
 import com.safewind.common.annotation.ApiOperationLog;
 import com.safewind.common.enums.ActivityExceptionEnum;
 import com.safewind.common.exception.BizException;
@@ -27,6 +28,7 @@ import java.util.Objects;
  * @author: Darven
  * @createTime: 2025-08-01  18:32
  */
+@Anonymous
 @RestController
 @RequestMapping("/ws-activity")
 public class ActivityController {
@@ -70,7 +72,7 @@ public class ActivityController {
         queryBO.setPageSize(pageSize);
 
         // 调用领域服务进行分页查询，返回分页结果
-        PageResult<ActivityBO> pageResult = activityDomainService.queryActivityPage(queryBO);
+        PageResult<ActivityBO> pageResult = activityDomainService.queryWsActivityPage(queryBO);
 
         // 将 BO 列表转换为 VO 列表，用于前端展示
         List<WsActivityVO> voList = ActivityConverter.INSTANCE.boListToVOList(pageResult.getData());
@@ -102,7 +104,7 @@ public class ActivityController {
         }
 
         // 调用领域服务获取活动数据
-        ActivityBO activityBO = activityDomainService.getActivityById(id);
+        ActivityBO activityBO = activityDomainService.getWsActivityById(id);
 
         // 校验活动数据是否存在
         if (Objects.isNull(activityBO)) {

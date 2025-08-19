@@ -2,6 +2,7 @@ package com.safewind.application.controller.controller.web;
 
 import com.safewind.application.controller.converter.NewsConverter;
 import com.safewind.application.controller.vo.NewsVO;
+import com.safewind.common.annotation.Anonymous;
 import com.safewind.common.annotation.ApiOperationLog;
 import com.safewind.common.enums.NewsExceptionEnum;
 import com.safewind.common.exception.BizException;
@@ -24,6 +25,7 @@ import java.util.List;
  * @createTime: 2025-08-01  18:31
  * @description: 官网-新闻模块
  */
+@Anonymous
 @RestController
 @RequestMapping("/ws-news")
 public class NewsController {
@@ -49,7 +51,7 @@ public class NewsController {
         queryBO.setPageSize(pageSize);
 
         // 调用领域层服务
-        PageResult<NewsBO> pageResult = newsDomainService.queryNewsPage(queryBO);
+        PageResult<NewsBO> pageResult = newsDomainService.queryWsNewsPage(queryBO);
         // 转换为VO
         List<NewsVO> voList = NewsConverter.INSTANCE.boListToVOList(pageResult.getData());
         // 封装返回结果
@@ -70,7 +72,7 @@ public class NewsController {
         if (id == null){
             throw new BizException(NewsExceptionEnum.ID_NOT_NULL);
         }
-        NewsBO newsBO = newsDomainService.getNewsById(id);
+        NewsBO newsBO = newsDomainService.getWsNewsById(id);
         if (newsBO == null) {
             throw new BizException(NewsExceptionEnum.NEWS_IS_NULL);
         }

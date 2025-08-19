@@ -1,6 +1,7 @@
 package com.safewind.application.controller.controller.common;
 
 import com.safewind.application.controller.vo.FileVO;
+import com.safewind.common.annotation.Anonymous;
 import com.safewind.common.utils.Result;
 import com.safewind.domain.service.FileDomainService;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
  * @CreateTime: 2025-05-29  22:42
  * @Description: 文件控制层
  */
+@Anonymous
 @Slf4j
 @RestController
 @RequestMapping("/file")

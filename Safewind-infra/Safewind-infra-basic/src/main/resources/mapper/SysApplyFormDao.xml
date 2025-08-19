@@ -37,6 +37,7 @@
                update_time
         from sys_apply_form
         where id = #{id}
+        and del_flag = '0'
     </select>
 
     <!--查询指定行数据-->
@@ -142,6 +143,13 @@
         </where>
     </select>
 
+    <select id="queryByStudentId" resultMap="SysApplyFormMap">
+        select id, student_id, grade, speciality, faculty, name, sex, class_name, dept_id, del_flag, create_by,
+               create_time, update_by, update_time
+        from sys_apply_form
+        where student_id = #{studentId}
+    </select>
+
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
         insert into sys_apply_form(student_id, grade, speciality, faculty, name, sex, class_name, dept_id, del_flag,
@@ -240,6 +248,13 @@
         from sys_apply_form
         where id = #{id}
     </delete>
+
+    <!--逻辑删除-->
+    <update id="softDeleteById">
+        update sys_apply_form
+        set del_flag = '2'
+        where id = #{id}
+    </update>
 
 </mapper>
 

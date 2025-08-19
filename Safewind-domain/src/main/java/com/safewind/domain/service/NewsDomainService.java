@@ -42,4 +42,14 @@ public interface NewsDomainService {
      * 获取最新新闻列表
      */
     List<NewsListBO> getLatestNews(Long limit);
+
+    /**
+     * 官网-获取所有新闻列表
+     */
+    PageResult<NewsBO> queryWsNewsPage(NewsQueryBO queryBO);
+
+    /**
+     * 官网-根据ID查询新闻详情
+     */
+    NewsBO getWsNewsById(Long id);
 }

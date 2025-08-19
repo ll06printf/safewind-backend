@@ -27,6 +27,7 @@
                update_time
         from sys_review
         where id = #{id}
+          and del_flag = '0'
     </select>
 
     <!--查询指定行数据-->
@@ -101,6 +102,27 @@
         </where>
     </select>
 
+
+    <select id="queryByApplyId" resultMap="SysReviewMap">
+        select id,
+        apply_id,
+        state,
+        remark,
+        del_flag,
+        create_by,
+        create_time,
+        update_by,
+        update_time
+        from sys_review
+        <where>
+            apply_id = #{applyId}
+            and del_flag = '0'
+            <if test="status != null">
+                and state = #{status}
+            </if>
+        </where>
+    </select>
+
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
         insert into sys_review(apply_id, state, remark, del_flag, create_by, create_time, update_by, update_time)
@@ -163,6 +185,12 @@
                 update_time = #{updateTime},
             </if>
         </set>
+        where id = #{id}
+    </update>
+
+    <update id="softDeleteById">
+        update sys_review
+        set del_flag = '2'
         where id = #{id}
     </update>
 

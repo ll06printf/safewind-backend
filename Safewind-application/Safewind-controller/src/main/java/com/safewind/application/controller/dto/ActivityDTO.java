@@ -40,4 +40,14 @@ public class ActivityDTO {
      * 活动图片
      */
     private String picture;
+
+    /**
+     * 是否外链
+     */
+    private String isLink;
+
+    /**
+     * 外链地址
+     */
+    private String externalLink;
 }

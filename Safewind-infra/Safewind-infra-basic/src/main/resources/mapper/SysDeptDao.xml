@@ -6,6 +6,10 @@
         <result property="id" column="id" jdbcType="INTEGER"/>
         <result property="name" column="name" jdbcType="VARCHAR"/>
         <result property="content" column="content" jdbcType="VARCHAR"/>
+        <result property="imageUrl" column="image_url" jdbcType="VARCHAR"/>
+        <result property="isLink" column="is_link" jdbcType="VARCHAR"/>
+        <result property="externalLink" column="external_link" jdbcType="VARCHAR"/>
+        <result property="introduction" column="introduction" jdbcType="VARCHAR"/>
         <result property="delFlag" column="del_flag" jdbcType="VARCHAR"/>
         <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
@@ -18,6 +22,10 @@
         select id,
                name,
                content,
+               image_url,
+               is_link,
+               external_link,
+               introduction,
                del_flag,
                create_by,
                create_time,
@@ -27,39 +35,51 @@
         where id = #{id}
     </select>
 
-    <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="SysDeptMap">
         select
-        id, name, content, del_flag, create_by, create_time, update_by, update_time
+        id, name, content, image_url, is_link, external_link, introduction, del_flag,
+        create_by, create_time, update_by, update_time
         from sys_dept
         <where>
-            <if test="id != null">
-                and id = #{id}
+            <!-- 默认查询未删除的数据 -->
+            del_flag = '0'
+            <if test="sysDept.id != null">
+                and id = #{sysDept.id}
             </if>
-            <if test="name != null and name != ''">
-                and name = #{name}
+            <if test="sysDept.name != null and sysDept.name != ''">
+                and name = #{sysDept.name}
             </if>
-            <if test="content != null and content != ''">
-                and content = #{content}
+            <if test="sysDept.content != null and sysDept.content != ''">
+                and content = #{sysDept.content}
             </if>
-            <if test="delFlag != null and delFlag != ''">
-                and del_flag = #{delFlag}
+            <if test="sysDept.isLink != null and sysDept.isLink != ''">
+                and is_link = #{sysDept.isLink}
             </if>
-            <if test="createBy != null and createBy != ''">
-                and create_by = #{createBy}
+            <if test="sysDept.externalLink != null and sysDept.externalLink != ''">
+                and external_link = #{sysDept.externalLink}
             </if>
-            <if test="createTime != null">
-                and create_time = #{createTime}
+            <if test="sysDept.introduction != null and sysDept.introduction != ''">
+                and introduction = #{sysDept.introduction}
             </if>
-            <if test="updateBy != null and updateBy != ''">
-                and update_by = #{updateBy}
+            <if test="sysDept.delFlag != null and sysDept.delFlag != ''">
+                and del_flag = #{sysDept.delFlag}
             </if>
-            <if test="updateTime != null">
-                and update_time = #{updateTime}
+            <if test="sysDept.createBy != null and sysDept.createBy != ''">
+                and create_by = #{sysDept.createBy}
+            </if>
+            <if test="sysDept.createTime != null">
+                and create_time = #{sysDept.createTime}
+            </if>
+            <if test="sysDept.updateBy != null and sysDept.updateBy != ''">
+                and update_by = #{sysDept.updateBy}
+            </if>
+            <if test="sysDept.updateTime != null">
+                and update_time = #{sysDept.updateTime}
             </if>
         </where>
-        limit #{pageable.offset}, #{pageable.pageSize}
+        limit #{offset}, #{limit}
     </select>
+
 
     <!--统计总行数-->
     <select id="count" resultType="java.lang.Long">
@@ -75,6 +95,15 @@
             <if test="content != null and content != ''">
                 and content = #{content}
             </if>
+            <if test="isLink != null and isLink != ''">
+                and is_link = #{isLink}
+            </if>
+            <if test="externalLink != null and externalLink != ''">
+                and external_link = #{externalLink}
+            </if>
+            <if test="introduction != null and introduction != ''">
+                and introduction = #{introduction}
+            </if>
             <if test="delFlag != null and delFlag != ''">
                 and del_flag = #{delFlag}
             </if>
@@ -93,37 +122,64 @@
         </where>
     </select>
 
+    <select id="queryAll" resultMap="SysDeptMap">
+        select *
+        from sys_dept
+        where del_flag = '0'
+    </select>
+
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
-        insert into sys_dept(name, content, del_flag, create_by, create_time, update_by, update_time)
-        values (#{name}, #{content}, #{delFlag}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime})
+        insert into sys_dept(
+            name, content, image_url, is_link, external_link, introduction,
+            del_flag, create_by, create_time, update_by, update_time
+        )
+        values (
+                   #{name}, #{content}, #{imageUrl}, #{isLink}, #{externalLink}, #{introduction},
+                   #{delFlag}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}
+               )
     </insert>
 
     <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into sys_dept(name, content, del_flag, create_by, create_time, update_by, update_time)
+        insert into sys_dept(
+        name, content, image_url, is_link, external_link, introduction,
+        del_flag, create_by, create_time, update_by, update_time
+        )
         values
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.name}, #{entity.content}, #{entity.delFlag}, #{entity.createBy}, #{entity.createTime},
-            #{entity.updateBy}, #{entity.updateTime})
+            (
+            #{entity.name}, #{entity.content}, #{entity.imageUrl}, #{entity.isLink}, #{entity.externalLink}, #{entity.introduction},
+            #{entity.delFlag}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime}
+            )
         </foreach>
     </insert>
 
     <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into sys_dept(name, content, del_flag, create_by, create_time, update_by, update_time)
+        insert into sys_dept(
+        name, content, image_url, is_link, external_link, introduction,
+        del_flag, create_by, create_time, update_by, update_time
+        )
         values
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.name}, #{entity.content}, #{entity.delFlag}, #{entity.createBy}, #{entity.createTime},
-            #{entity.updateBy}, #{entity.updateTime})
+            (
+            #{entity.name}, #{entity.content}, #{entity.imageUrl}, #{entity.isLink}, #{entity.externalLink}, #{entity.introduction},
+            #{entity.delFlag}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime}
+            )
         </foreach>
         on duplicate key update
         name = values(name),
         content = values(content),
+        image_url = values(image_url),
+        is_link = values(is_link),
+        external_link = values(external_link),
+        introduction = values(introduction),
         del_flag = values(del_flag),
         create_by = values(create_by),
         create_time = values(create_time),
         update_by = values(update_by),
         update_time = values(update_time)
     </insert>
+
 
     <!--通过主键修改数据-->
     <update id="update">
@@ -134,6 +190,18 @@
             </if>
             <if test="content != null and content != ''">
                 content = #{content},
+            </if>
+            <if test="imageUrl != null and imageUrl != ''">
+                image_url = #{imageUrl},
+            </if>
+            <if test="isLink != null and isLink != ''">
+                is_link = #{isLink},
+            </if>
+            <if test="externalLink != null and externalLink != ''">
+                external_link = #{externalLink},
+            </if>
+            <if test="introduction != null and introduction != ''">
+                introduction = #{introduction},
             </if>
             <if test="delFlag != null and delFlag != ''">
                 del_flag = #{delFlag},
@@ -162,4 +230,3 @@
     </delete>
 
 </mapper>
-

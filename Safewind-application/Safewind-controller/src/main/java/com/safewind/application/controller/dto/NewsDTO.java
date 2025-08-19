@@ -40,4 +40,14 @@ public class NewsDTO {
      * 封面图片
      */
     private String coverImg;
+
+    /**
+     * 是否外链
+     * */
+    private String isLink;
+
+    /**
+     * 外链
+     * */
+    private String externalLink;
 }

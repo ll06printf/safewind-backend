@@ -1,6 +1,7 @@
 package com.safewind.infra.basic.service.impl;
 
 import com.safewind.common.annotation.EntityFill;
+import com.safewind.common.enums.CommonStatusEnum;
 import com.safewind.infra.basic.entity.SysReview;
 import com.safewind.infra.basic.dao.SysReviewDao;
 import com.safewind.infra.basic.service.SysReviewService;
@@ -67,4 +68,25 @@ public class SysReviewServiceImpl implements SysReviewService {
     public boolean deleteById(Long id) {
         return this.sysReviewDao.deleteById(id) > 0;
     }
+
+    /**
+     * 逻辑删除数据
+     *
+     * @param id 主键
+     * @return 是否成功
+     */
+    @Override
+    public boolean softDeleteById(Long id) {
+        // 逻辑删除
+        SysReview sysReview =this.sysReviewDao.queryById(id);
+        sysReview.setDelFlag(CommonStatusEnum.DELETE_STATUS.getStatus());
+        return this.sysReviewDao.update(sysReview)>0;
+    }
+
+    @Override
+    public SysReview queryByApplyId(Long id,Integer status) {
+        return this.sysReviewDao.queryByApplyId(id,status);
+    }
+
+
 }

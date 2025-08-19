@@ -42,6 +42,16 @@ public class NewsVO {
     private String coverImg;
 
     /**
+     * 是否外链
+     * */
+    private String isLink;
+
+    /**
+     * 外链
+     * */
+    private String externalLink;
+
+    /**
      * 创建时间
      */
     private LocalDateTime createTime;

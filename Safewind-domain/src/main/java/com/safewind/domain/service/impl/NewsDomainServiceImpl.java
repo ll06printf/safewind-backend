@@ -7,6 +7,7 @@ import com.safewind.domain.bo.NewsBO;
 import com.safewind.domain.bo.NewsListBO;
 import com.safewind.domain.bo.NewsQueryBO;
 import com.safewind.domain.converter.NewsDomainConverter;
+import com.safewind.domain.markdown.MarkdownHelper;
 import com.safewind.domain.service.NewsDomainService;
 import com.safewind.infra.basic.entity.WsNews;
 import com.safewind.infra.basic.entity.WsNewsQuery;
@@ -95,6 +96,43 @@ public class NewsDomainServiceImpl implements NewsDomainService {
     @Override
     public List<NewsListBO> getLatestNews(Long limit) {
         List<WsNews> latestNews = wsNewsService.getLatestNews(limit);
+        // 转化 MD
+        latestNews.forEach(news -> news.setHtmlContent(MarkdownHelper.convertMarkdown2Html(news.getHtmlContent())));
         return NewsDomainConverter.INSTANCE.entityListToListBOList(latestNews);
+    }
+
+    @Override
+    public PageResult<NewsBO> queryWsNewsPage(NewsQueryBO queryBO) {
+        // 构建查询条件
+        WsNewsQuery query = new WsNewsQuery();
+        query.setTitle(queryBO.getTitle());
+        query.setStartTime(queryBO.getStartTime());
+        query.setEndTime(queryBO.getEndTime());
+
+        // 调用基础设施层服务
+        PageResult<WsNews> pageResult = wsNewsService.queryPage(query, queryBO.getPageNum(), queryBO.getPageSize());
+
+        // 转换为领域对象
+        List<NewsBO> newsBOList = NewsDomainConverter.INSTANCE.entityListToBOList(pageResult.getData());
+        // 转换 MD
+        newsBOList.forEach(newsBO -> newsBO.setHtmlContent(MarkdownHelper.convertMarkdown2Html(newsBO.getHtmlContent())));
+
+        return PageResult.<NewsBO>builder()
+                .data(newsBOList)
+                .totalSize(pageResult.getTotalSize())
+                .totalPages(pageResult.getTotalPages())
+                .pageNum(pageResult.getPageNum())
+                .pageSize(pageResult.getPageSize())
+                .build();
+    }
+
+    @Override
+    public NewsBO getWsNewsById(Long id) {
+        WsNews wsNews = wsNewsService.queryById(id);
+        if (wsNews == null) {
+            return null;
+        }
+        wsNews.setHtmlContent(MarkdownHelper.convertMarkdown2Html(wsNews.getHtmlContent()));
+        return NewsDomainConverter.INSTANCE.entityToBO(wsNews);
     }
 }

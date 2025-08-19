@@ -1,7 +1,9 @@
 package com.safewind.application.controller.controller.web;
 
 import com.safewind.application.controller.converter.WallConverter;
+import com.safewind.application.controller.dto.WallDTO;
 import com.safewind.application.controller.vo.WsWallVO;
+import com.safewind.common.annotation.Anonymous;
 import com.safewind.common.annotation.ApiOperationLog;
 import com.safewind.common.enums.WallExceptionEnum;
 import com.safewind.common.exception.BizException;
@@ -10,10 +12,7 @@ import com.safewind.domain.bo.WallBO;
 import com.safewind.domain.bo.WallListBO;
 import com.safewind.domain.service.WallDomainService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Objects;
@@ -25,6 +24,7 @@ import java.util.Objects;
  * @author: Darven
  * @createTime: 2025-08-01  18:32
  */
+@Anonymous
 @RestController
 @RequestMapping("/ws-wall")
 public class WallController {
@@ -76,6 +76,25 @@ public class WallController {
 
         // 将 BO 转换为 VO 并返回
         WsWallVO wallVO = WallConverter.INSTANCE.boToVO(wallBO);
+        return Result.success(wallVO);
+    }
+
+    @ApiOperationLog(description = "添加弹幕")
+    @PostMapping("/addWall")
+    public Result<WsWallVO> addWall(@RequestBody WallDTO wallDTO) {
+        // 校验传入的弹幕数据是否为空
+        if (Objects.isNull(wallDTO)) {
+            throw new BizException(WallExceptionEnum.WALL_IS_NULL);
+        }
+
+        // 将 DTO 转换为 BO 对象
+        WallBO wallBO = WallConverter.INSTANCE.dtoToBO(wallDTO);
+
+        // 调用领域服务保存弹幕数据
+        WallBO savedWall = wallDomainService.addWall(wallBO);
+
+        // 将保存后的 BO 转换为 VO 并返回
+        WsWallVO wallVO = WallConverter.INSTANCE.boToVO(savedWall);
         return Result.success(wallVO);
     }
 }

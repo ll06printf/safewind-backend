@@ -2,6 +2,7 @@ package com.safewind.infra.basic.entity;
 
 import com.safewind.common.entity.BaseEntity;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,8 +15,8 @@ import java.io.Serializable;
  * @author Darven
  * @since 2025-05-21 21:46:55
  */
-@Setter
-@Getter
+@EqualsAndHashCode(callSuper = true)
+@Data
 public class WsNews extends BaseEntity implements Serializable {
     private static final long serialVersionUID = -49098484929198511L;
 
@@ -40,6 +41,14 @@ public class WsNews extends BaseEntity implements Serializable {
      * 封面
      * */
     private String coverImg;
+    /**
+     * 是否外链
+     * */
+    private String isLink;
+    /**
+     * 外链
+     * */
+    private String externalLink;
     /**
      * 删除标志（0代表存在 2代表删除）
      */

@@ -21,7 +21,6 @@ public interface SysApplyFormDao {
      */
     SysApplyForm queryById(Long id);
 
-
     /**
      * 统计总行数
      *
@@ -71,5 +70,29 @@ public interface SysApplyFormDao {
      */
     int deleteById(Long id);
 
-}
+    /**
+     * 逻辑删除数据
+     *
+     * @param id 主键
+     * @return 影响行数
+     */
+    int softDeleteById(Long id);
 
+    /**
+     * 查询指定行数据
+     *
+     * @param sysApplyForm 查询条件
+     * @param offset 偏移量
+     * @param limit 查询数量
+     * @return 对象列表
+     */
+    List<SysApplyForm> queryAllByLimit(@Param("sysApplyForm") SysApplyForm sysApplyForm, @Param("offset") Long offset, @Param("limit") Long limit);
+
+    /**
+     * 通过学号查找
+     *
+     * @param studentId 筛选条件
+     * @return 总行数
+     */
+    SysApplyForm queryByStudentId(String studentId);
+}

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.safewind.infra.basic.dao.WsBannerDao">
+
+    <resultMap type="com.safewind.infra.basic.entity.WsBanner" id="WsBannerMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="subTitle" column="sub_title" jdbcType="VARCHAR"/>
+        <result property="backgroundPicture" column="background_picture" jdbcType="VARCHAR"/>
+        <result property="delFlag" column="del_flag" jdbcType="VARCHAR"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="WsBannerMap">
+        select id,
+               title,
+               sub_title,
+               background_picture,
+               del_flag,
+               create_by,
+               create_time,
+               update_by,
+               update_time
+        from ws_banner
+        where id = #{id} and del_flag = '0'
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from ws_banner
+        <where>
+            del_flag='0'
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="title != null and title != ''">
+                and title = #{title}
+            </if>
+            <if test="subTitle != null and subTitle != ''">
+                and sub_title = #{subTitle}
+            </if>
+            <if test="backgroundPicture != null and backgroundPicture != ''">
+                and background_picture = #{backgroundPicture}
+            </if>
+            <if test="delFlag != null and delFlag != ''">
+                and del_flag = #{delFlag}
+            </if>
+            <if test="createBy != null and createBy != ''">
+                and create_by = #{createBy}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                and update_by = #{updateBy}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+        </where>
+    </select>
+
+    <!-- 分页查询 -->
+    <select id="queryPage" resultMap="WsBannerMap">
+        SELECT
+        id, title, sub_title, background_picture, del_flag, create_by,
+        create_time, update_by, update_time
+        FROM ws_banner
+        <where>
+            del_flag = '0'
+            <!-- 模糊查询标题 -->
+            <if test="query.title != null and query.title !=''">
+                AND title LIKE CONCAT('%', #{query.title}, '%')
+            </if>
+            <!-- 模糊查询副标题 -->
+            <if test="query.subTitle != null and query.subTitle !=''">
+                AND sub_title LIKE CONCAT('%', #{query.subTitle}, '%')
+            </if>
+        </where>
+        ORDER BY create_time DESC
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into ws_banner(title, sub_title, background_picture, del_flag, create_by, create_time, update_by, update_time)
+        values (#{title}, #{subTitle}, #{backgroundPicture}, #{delFlag}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update ws_banner
+        <set>
+            <if test="title != null and title != ''">
+                title = #{title},
+            </if>
+            <if test="subTitle != null and subTitle != ''">
+                sub_title = #{subTitle},
+            </if>
+            <if test="backgroundPicture != null and backgroundPicture != ''">
+                background_picture = #{backgroundPicture},
+            </if>
+            <if test="delFlag != null and delFlag != ''">
+                del_flag = #{delFlag},
+            </if>
+            <if test="createBy != null and createBy != ''">
+                create_by = #{createBy},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                update_by = #{updateBy},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        update ws_banner set del_flag = '2' where id = #{id}
+    </delete>
+
+</mapper> 

@@ -1,7 +1,9 @@
 package com.safewind.infra.basic.service;
 
+import com.safewind.common.page.PageResult;
 import com.safewind.infra.basic.entity.SysDept;
 
+import java.util.List;
 
 /**
  * 部门表(SysDept)表服务接口
@@ -18,8 +20,6 @@ public interface SysDeptService {
      * @return 实例对象
      */
     SysDept queryById(Long id);
-
-
 
     /**
      * 新增数据
@@ -45,4 +45,20 @@ public interface SysDeptService {
      */
     boolean deleteById(Long id);
 
+    /**
+     * 分页查询部门列表
+     *
+     * @param sysDept 查询条件
+     * @param pageNum 页码
+     * @param pageSize 每页大小
+     * @return 分页结果
+     */
+    PageResult<SysDept> queryPage(SysDept sysDept, Long pageNum, Long pageSize);
+
+    /**
+     * 获取所有部门
+     *
+     * @return 部门列表
+     */
+    List<SysDept> getAllDepartments();
 }

@@ -1,6 +1,8 @@
 package com.safewind.infra.basic.entity;
 
+import com.safewind.common.entity.BaseEntity;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
 import java.io.Serializable;
@@ -11,8 +13,9 @@ import java.io.Serializable;
  * @author Darven
  * @since 2025-05-21 21:46:26
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class SysApplyForm implements Serializable {
+public class SysApplyForm extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 406843624801298500L;
 
     private Long id;

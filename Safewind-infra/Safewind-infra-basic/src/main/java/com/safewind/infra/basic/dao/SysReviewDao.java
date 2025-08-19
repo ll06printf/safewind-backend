@@ -70,5 +70,20 @@ public interface SysReviewDao {
      */
     int deleteById(Long id);
 
+    /**
+     * 通过主键软删除数据
+     *
+     * @param id 主键
+     * @return 影响行数
+     */
+    int softDeleteById(Long id);
+
+    /**
+     * 通过申请ID查询单条数据
+     *
+     * @param applyId 申请ID
+     * @return 影响行数
+     */
+    SysReview queryByApplyId(@Param("applyId") Long applyId,@Param("status") Integer status);
 }
 

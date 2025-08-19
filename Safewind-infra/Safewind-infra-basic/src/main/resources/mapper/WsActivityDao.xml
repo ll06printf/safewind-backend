@@ -9,6 +9,8 @@
         <result property="introduction" column="introduction" jdbcType="VARCHAR"/>
         <result property="startTime" column="start_time" jdbcType="TIMESTAMP"/>
         <result property="picture" column="picture" jdbcType="VARCHAR"/>
+        <result property="isLink" column="is_link" jdbcType="VARCHAR"/>
+        <result property="externalLink" column="external_link" jdbcType="VARCHAR"/>
         <result property="delFlag" column="del_flag" jdbcType="VARCHAR"/>
         <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
@@ -24,6 +26,8 @@
                introduction,
                start_time,
                picture,
+               is_link,
+                external_link,
                del_flag,
                create_by,
                create_time,
@@ -38,7 +42,7 @@
     <select id="queryAllByLimit" resultMap="WsActivityMap">
         SELECT
         id, title, brief, introduction, start_time,
-        picture, del_flag, create_by, create_time, update_by, update_time
+        picture, is_link, external_link, del_flag, create_by, create_time, update_by, update_time
         FROM ws_activity
         <where>
             del_flag = '0'
@@ -81,12 +85,14 @@
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
         insert into ws_activity(title, brief, introduction, start_time,
-                                picture, del_flag, create_by, create_time, update_by, update_time)
+                                picture, is_link,external_link, del_flag, create_by, create_time, update_by, update_time)
         values (#{title},
                 #{brief},
                 #{introduction},
                 #{startTime},
                 #{picture},
+                #{isLink},
+                #{externalLink},
                 #{delFlag},
                 #{createBy},
                 #{createTime},
@@ -96,7 +102,7 @@
 
     <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
         insert into ws_activity(title, brief, introduction, start_time,
-        picture, del_flag, create_by, create_time, update_by, update_time)
+        picture, is_link, external_link, del_flag, create_by, create_time, update_by, update_time)
         values
         <foreach collection="entities" item="entity" separator=",">
             (#{entity.title},
@@ -104,6 +110,8 @@
             #{entity.introduction},
             #{entity.startTime},
             #{entity.picture},
+            #{entity.isLink},
+            #{entity.externalLink},
             #{entity.delFlag},
             #{entity.createBy},
             #{entity.createTime},
@@ -112,9 +120,10 @@
         </foreach>
     </insert>
 
+
     <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
         insert into ws_activity(title, brief, introduction, start_time,
-        picture, del_flag, create_by, create_time, update_by, update_time)
+        picture, is_link,external_link, del_flag, create_by, create_time, update_by, update_time)
         values
         <foreach collection="entities" item="entity" separator=",">
             (#{entity.title},
@@ -122,6 +131,8 @@
             #{entity.introduction},
             #{entity.startTime},
             #{entity.picture},
+             #{entity.isLink},
+              #{entity.externalLink},
             #{entity.delFlag},
             #{entity.createBy},
             #{entity.createTime},
@@ -160,6 +171,12 @@
             <if test="picture != null and picture != ''">
                 picture = #{picture},
             </if>
+            <if test="isLink != null and isLink != ''">
+                is_link = #{isLink},
+            </if>
+            <if test="externalLink != null and externalLink != ''">
+                external_link = #{externalLink},
+            </if>
             <if test="delFlag != null and delFlag != ''">
                 del_flag = #{delFlag},
             </if>
@@ -194,6 +211,8 @@
                introduction,
                start_time,
                picture,
+               is_link,
+               external_link,
                del_flag,
                create_by,
                create_time,

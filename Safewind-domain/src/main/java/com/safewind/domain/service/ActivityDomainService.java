@@ -42,4 +42,14 @@ public interface ActivityDomainService {
      * 获取最新活动列表
      */
     List<ActivityListBO> getLatestActivities(Integer limit);
+
+    /**
+     * 根据ID获取活动详情
+     */
+    ActivityBO getWsActivityById(Long id);
+
+    /**
+     * 官网-分页查询活动列表
+     */
+    PageResult<ActivityBO> queryWsActivityPage(ActivityQueryBO queryBO);
 }

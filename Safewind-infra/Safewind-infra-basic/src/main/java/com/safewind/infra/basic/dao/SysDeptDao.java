@@ -2,6 +2,7 @@ package com.safewind.infra.basic.dao;
 
 import com.safewind.infra.basic.entity.SysDept;
 import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 
 /**
@@ -19,7 +20,6 @@ public interface SysDeptDao {
      * @return 实例对象
      */
     SysDept queryById(Long id);
-
 
     /**
      * 统计总行数
@@ -70,5 +70,20 @@ public interface SysDeptDao {
      */
     int deleteById(Long id);
 
-}
+    /**
+     * 查询指定行数据
+     *
+     * @param sysDept 查询条件
+     * @param offset 偏移量
+     * @param limit 查询数量
+     * @return 对象列表
+     */
+    List<SysDept> queryAllByLimit(@Param("sysDept") SysDept sysDept, @Param("offset") Long offset, @Param("limit") Long limit);
 
+    /**
+     * 查询所有部门
+     *
+     * @return 部门列表
+     */
+    List<SysDept> queryAll();
+}

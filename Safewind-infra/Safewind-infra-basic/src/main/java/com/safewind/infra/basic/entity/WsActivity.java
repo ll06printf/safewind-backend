@@ -2,6 +2,7 @@ package com.safewind.infra.basic.entity;
 
 import com.safewind.common.entity.BaseEntity;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
 import java.io.Serializable;
@@ -12,6 +13,7 @@ import java.io.Serializable;
  * @author Darven
  * @since 2025-05-21 21:46:55
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class WsActivity extends BaseEntity implements Serializable {
     private static final long serialVersionUID = 198898345824503188L;
@@ -37,6 +39,14 @@ public class WsActivity extends BaseEntity implements Serializable {
      * 视觉图
      */
     private String picture;
+    /**
+     * 是否外链
+     * */
+    private String isLink;
+    /**
+     * 外链
+     * */
+    private String externalLink;
     /**
      * 删除标志（0代表存在 2代表删除）
      */
